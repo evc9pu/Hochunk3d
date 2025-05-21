@@ -1,0 +1,32 @@
+set_plot,'ps'
+
+device,/inches,xsize=6,ysize=4.5,xoffset=1,yoffset=1,$
+	filename='tr.eps',/color,/encapsulated
+
+!p.multi=[0,1,1]
+
+xtit='r(AU)'
+ytit='T(K)'
+xmar=[10,3]
+ymar=[4,2]
+rin=.1
+rout=300.
+id=1 ;dust type (0=disk 1, 1=disk 2, 2=envelope, 3=outflow, 4=disk 1 PAH, 5=disk 2 PAH, 6=envelope PAH, 7=cavity PAH)
+
+oplot=0
+dir='../models/modcII'
+theta=83.
+ls=1 ;linestyle
+tinc_fits,dir,id,'',xtit,ytit,xmar,ymar,rin,rout,theta,oplot,ls
+
+oplot=1
+ls=0
+dir='../models/modcII_gap_spiral'	
+tinc_fits,dir,id,'',xtit,ytit,xmar,ymar,rin,rout,theta,oplot,ls
+
+ls=2
+dir='../models/modcII'	
+;tinc_fits,dir,id,'',xtit,ytit,xmar,ymar,rin,rout,theta,oplot,ls
+
+
+device,/close

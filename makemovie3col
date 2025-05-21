@@ -1,0 +1,40 @@
+;script to run movie.pro
+
+dir='../models/modcII_warp_spot/'
+
+d=430.
+rmaxi=0.1
+nx=149
+gsig=0.0000001
+Av=0.
+
+thetstr='65.0'
+phiarrst=['0.0','20.0','40.0','60.0','80.0','100.0','120.0','140.0','160.0','180.0',$
+    '200.0','220.0','240.0','260.0','280.0','300.0','320.0','340.0']
+
+;filters=['VV','RR','II']
+;wavelengths=[0.55,0.67,0.8]
+;minvals=[1.e10,1.e10,1.e10]
+ 
+;filters=['RR','II','2J']
+;wavelengths=[0.67,0.8,1.23]
+;minvals=[1.e10,1.e10,1.e10]
+
+filters=['II','2J','2H']
+wavelengths=[0.8,1.23,1.66]
+minvals=[1.e10,1.e10,1.e10]
+
+filters=['2J','2H','2K']
+wavelengths=[1.23,1.66,2.16]
+minvals=[1.e10,1.e10,1.e10]
+
+filters=['2K','I1','I2']
+wavelengths=[2.16,3.55,4.50]
+minvals=[1.e10,1.e10,1.e10]
+    
+
+
+;movie3col,dir,d,rmaxi,nx,gsig,Av,thetstr,phiarrst,filters,wavelengths,minvals
+
+;testing, makes 1 image only
+movie3col,dir,d,rmaxi,nx,gsig,Av,thetstr,phiarrst,filters,wavelengths,minvals,/test

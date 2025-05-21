@@ -1,0 +1,26 @@
+;script to run movie.pro
+
+dir='../models/modcII_misalign/'
+rmaxi=400.  ;**SET to RMAXI value in mctherm.par***
+d=140.
+thetstr='60.0'
+filter='2H'
+gsig=0.0000001
+minval=100000.0
+wavelength=1.6
+
+
+nx=149
+Av=0.
+
+phiarrst=['0.0','20.0','40.0','60.0','80.0','100.0','120.0','140.0','160.0','180.0',$
+    '200.0','220.0','240.0','260.0','280.0','300.0','320.0','340.0']
+
+window,0,xsize=2*nx,ysize=2*nx
+
+;movie,dir,d,rmaxi,nx,gsig,Av,thetstr,phiarrst,filter,wavelength,minval
+movie_fits,dir,d,rmaxi,nx,gsig,Av,thetstr,phiarrst,filter,wavelength,minval
+
+
+;testing, makes 1 image only
+;movie,dir,d,rmaxi,nx,gsig,Av,thetstr,phiarrst,filter,wavelength,minval,/test

@@ -1,0 +1,130 @@
+;you can use this with data or models.
+;if models, make fits files first (@runfits)
+
+lrange=3   ;10^(lrange) is dynamic range
+
+;default minflux values are for modcI model.  vary for the other ones.
+
+;if using unformatted files (not fitsio), edit 'runfits' and run that (@runfits), then set dir=''
+;dir=''
+;if using fitsio format, the images are *.fits.gz files in the model directory.
+;dir='../models/highmass_embedded/'
+;dir='../models/highmass_embedded_nopah/'
+;dir='../models/AeBe_env_nopah/'
+;dir='../models/AeBe_env_pah/'
+;dir='../models/VeLLO_noOI/'
+;dir='../models/VeLLO/'
+;dir='../models/highmass_OI/'
+;dir='../models/highmass_noOI/'
+;dir='../models/eclump_fractal/'
+;dir='../models/modcI/'
+;dir='../models/modcI_powlaw/'
+;dir='../models/modcI_2walls/'
+;dir='../models/modcI_fract_p5/'
+;dir='../models/modcI_fract_outflow_p9/'
+;dir='../models/modcII_warp_spot/'
+;dir='../models/modcII_gap_puff/'
+;dir='../models/modcII_misalign/'
+;dir='../models/modcII_gap_spiral/'
+;dir='../models/modcII/'
+dir='../models/modcII_hseq/'
+
+;;rotating hotspot
+;minflux=200000000.
+;lrange=5.
+;; do phi angles 40 and 180
+;file1=dir+'e_VV_60.0_180.0_I_img.fits.gz'
+;file2=dir+'e_2J_60.0_180.0_I_img.fits.gz'
+;file3=dir+'e_I2_60.0_180.0_I_img.fits.gz'
+
+;optical  VRI
+;minflux=0.01   ;MJy/sr
+;file1='e_VV_80.0_0.0_I_img.fits'   ;example of unformatted files converted to fits (@runfits)
+;file2='e_RR_80.0_0.0_I_img.fits'
+;file3='e_II_80.0_0.0_I_img.fits'
+;minflux=0.01  ;MJy/sr
+;file1=dir+'e_VV_80.0_0.0_I_img.fits.gz'   ;fitsio output in the model directory
+;file2=dir+'e_RR_80.0_0.0_I_img.fits.gz'
+;file3=dir+'e_II_80.0_0.0_I_img.fits.gz'
+
+
+;JHK 3-color
+;minflux=0.15   ;MJy/sr
+;file1='e_2J_80.0_0.0_I_img.fits'
+;file2='e_2H_80.0_0.0_I_img.fits'
+;file3='e_2K_80.0_0.0_I_img.fits'
+;minflux=0.015  ;eclump_fractal
+;minflux=0.01  ; VeLLO models
+;minflux=0.40  ;modcI
+minflux=2.0 ;modcII, modcII_hseq
+file1=dir+'e_2J_80.0_0.0_I_img.fits.gz'
+file2=dir+'e_2H_80.0_0.0_I_img.fits.gz'
+file3=dir+'e_2K_80.0_0.0_I_img.fits.gz'
+;gap model
+;minflux=2.0
+;file1=dir+'e_2J_30.0_0.0_I_img.fits.gz'
+;file2=dir+'e_2H_30.0_0.0_I_img.fits.gz'
+;file3=dir+'e_2K_30.0_0.0_I_img.fits.gz'
+;file1=dir+'e_2J_30.0_0.0_PF_img.fits.gz'
+;file2=dir+'e_2H_30.0_0.0_PF_img.fits.gz'
+;file3=dir+'e_2K_30.0_0.0_PF_img.fits.gz'
+;misaligned disk
+;minflux=200000.0
+;file1=dir+'e_2J_60.0_0.0_I_img.fits.gz'
+;file2=dir+'e_2H_60.0_0.0_I_img.fits.gz'
+;file3=dir+'e_2K_60.0_0.0_I_img.fits.gz'
+;minflux=2.0 ;modcII_gap_spiral
+;file1=dir+'e_2J_10.0_0.0_I_img.fits.gz'
+;file2=dir+'e_2H_10.0_0.0_I_img.fits.gz'
+;file3=dir+'e_2K_10.0_0.0_I_img.fits.gz'
+
+;IRAC 3-color
+;minflux=0.1   ;MJy/sr
+;file1='e_I1_80.0_0.0_I_img.fits'
+;file2='e_I2_80.0_0.0_I_img.fits'
+;file3='e_I4_80.0_0.0_I_img.fits'
+;minflux=50.   ;MJy/s ; highmass_embedded
+;minflux=25.   ;MJy/s ; highmass_embedded_nopah
+;minflux=0.15   ;MJy/sr  ; AeBe_nopah
+;minflux=0.30   ;MJy/sr  ; AeBe_pah
+;minflux=.04   ;MJy/sr  ;eclump_fractal
+;file1=dir+'e_I1_80.0_0.0_I_img.fits.gz'
+;file2=dir+'e_I2_80.0_0.0_I_img.fits.gz'
+;file3=dir+'e_I4_80.0_0.0_I_img.fits.gz'
+;file1=dir+'e_I1_30.0_0.0_I_img.fits.gz'
+;file2=dir+'e_I2_30.0_0.0_I_img.fits.gz'
+;file3=dir+'e_I4_30.0_0.0_I_img.fits.gz'
+
+
+;minflux=0.01   ;MJy/sr
+;file1='e_I2_80.0_0.0_I_img.fits'
+;file2='e_I4_80.0_0.0_I_img.fits'
+;file3='e_M1_80.0_0.0_I_img.fits'
+;minflux=0.1   ;MJy/sr
+;file1=dir+'e_I2_80.0_0.0_I_img.fits.gz'
+;file2=dir+'e_I4_80.0_0.0_I_img.fits.gz'
+;file3=dir+'e_M1_80.0_0.0_I_img.fits.gz'
+
+
+;minflux=10.   ;MJy/sr
+;file1='e_I4_80.0_0.0_I_img.fits'
+;file2='e_M1_80.0_0.0_I_img.fits'
+;file3='e_M2_80.0_0.0_I_img.fits'
+;minflux=50.0   ;MJy/sr
+;file1=dir+'e_I4_30.0_0.0_I_img.fits.gz'
+;file2=dir+'e_M1_30.0_0.0_I_img.fits.gz'
+;file3=dir+'e_M2_30.0_0.0_I_img.fits.gz'
+
+
+;minflux=30.   ;MJy/sr
+;file1='e_M1_80.0_0.0_I_img.fits'
+;file2='e_M2_80.0_0.0_I_img.fits'
+;file3='e_M3_80.0_0.0_I_img.fits'
+;minflux=50.0   ;MJy/sr
+;file1=dir+'e_M1_80.0_0.0_I_img.fits.gz'
+;file2=dir+'e_M2_80.0_0.0_I_img.fits.gz'
+;file3=dir+'e_M3_80.0_0.0_I_img.fits.gz'
+
+
+;im3col,file1,file2,file3,minflux,lrange
+im3col_fits,file1,file2,file3,minflux,lrange

@@ -1,0 +1,39 @@
+
+!p.multi=[0,1,1]
+set_plot,'ps'
+if !d.name eq 'PS' then device,xsize=6.,ysize=5.,/inches,$
+/portrait,xoffset=1.0,yoffset=1,/color,bits=24,filename='pol.ps'
+
+dir='../models/modcII'
+
+nap=1
+
+iap=1   ;aperture, ranges from 1 to nap = total number of apertures;
+rstar=2.09
+tstar=4.e3
+
+i1=0
+i2=9
+
+thetst='10.0'
+phist='0.0'
+
+title=''  ;put in a title if you want
+xr=[0.1,1000.]  ;yrange of plot, [ymin, ymax];  make it large for class 0 source
+
+nsmooth=4.
+
+oplot=0
+linestyl=0
+;pole_fits,dir,title,xr,[0,20],nap,iap,nsmooth,oplot,thetst,phist,ccol,linestyl
+pol_fits,dir,title,xr,[-10,30],iap,oplot,i1,i2,nsmooth,linestyl
+;pol,dir,title,xr,[-0.1,0.3],iap,oplot,i1,i2,nsmooth,linestyl
+
+oplot=1
+linestyl=2
+ccol=135
+;pole_fits,dir,title,xr,yr,nap,iap,nsmooth,oplot,thetst,phist,ccol,linestyl
+;pole,dir,title,xr,yr,nap,iap,nsmooth,oplot,thetst,phist,ccol,linestyl
+
+if !d.name eq 'PS' then device,/close
+

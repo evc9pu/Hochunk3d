@@ -1,0 +1,64 @@
+!p.multi=[0,1,1]
+set_plot,'ps'
+if !d.name eq 'PS' then device,xsize=6.,ysize=4,/inches,$
+/portrait,xoffset=0.2,yoffset=2,bits=24,/color,/CMYK,$
+;filename='sedoe.ps'
+filename='sedoe.eps',/encapsulated
+
+iap=1   ;aperture, ranges from 1 to nap = total number of apertures
+
+Jy=0   ;0 for plotting lam*Flam, 1 for plotting Jy
+titl=' '     ;put in title between ' ' if you want
+cs=1.5   ;character size in plot
+linesty=0  ;solid lines.  
+col=0 ;line color for sede_fits call
+
+;oplot spherically averaged SED
+isphav=0
+
+;overplotting input stellar spectrum
+cplanck='no'  ;'yes' for plotting planck file, 'no' for input atmosphere file
+iplotstar = 1  ; 1 for plotting stellar spectrum, 0 for not
+
+lumscale=1.0d0    ;luminosity scale factor, default=1, but you might be trying
+;to fit some data so this lets you see how much you need to change it
+;(run lum.pro to see what rstar and tstar you need).
+
+
+;low-mass TTS modc* models
+dir='../models/modcII'
+atfile='../models/parfiles/kt04000g+3.5z+0.0.ascii'
+rstar=2.09
+tstar=4000.d0
+d=140.  ; distance in pc
+Av=0.0   ;assumes foreground dust is similar to ISM.
+
+;origin
+;oplot=0
+;sedoe_fits,dir,rstar,tstar,iplotstar,lumscale,'total,stellar,disk,envelope',d,iap,Jy,atfile,cplanck,Av,'a',$
+;   cs,oplot,linesty,col
+;oplot=1
+;linesty=1
+;sedoe_fits,dir,rstar,tstar,iplotstar,lumscale,'',d,iap,Jy,atfile,cplanck,Av,'s',cs,oplot,linesty,col
+;linesty=2
+;sedoe_fits,dir,rstar,tstar,iplotstar,lumscale,'',$
+;      d,iap,Jy,atfile,cplanck,Av,'d',cs,oplot,linesty,col
+;linesty=3
+;sedoe_fits,dir,rstar,tstar,iplotstar,lumscale,'',d,iap,Jy,atfile,cplanck,Av,'e',cs,oplot,linesty,col
+
+;radiation type 
+oplot=0
+sede_fits,dir,rstar,tstar,iplotstar,lumscale,'total,direct,scattered,thermal',d,iap,Jy,atfile,cplanck,Av,'a',cs,oplot,linesty,col
+oplot=1
+linesty=1
+sede_fits,dir,rstar,tstar,iplotstar,lumscale,'thermal',d,iap,Jy,atfile,cplanck,Av,'t',cs,oplot,linesty,col
+linesty=2
+sede_fits,dir,rstar,tstar,iplotstar,lumscale,'direct stellar/hotspot',$
+      d,iap,Jy,atfile,cplanck,Av,'d',cs,oplot,linesty,col
+	linesty=3
+sede_fits,dir,rstar,tstar,iplotstar,lumscale,'scattered',d,iap,Jy,atfile,cplanck,Av,'s',cs,oplot,linesty,col
+
+
+
+if !d.name eq 'PS' then device,/close
+

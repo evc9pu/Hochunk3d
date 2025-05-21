@@ -1,0 +1,33 @@
+
+!p.multi=[0,1,1]
+set_plot,'ps'
+if !d.name eq 'PS' then device,xsize=6.,ysize=5.,/inches,$
+/portrait,xoffset=1.0,yoffset=1,/color,bits=24,filename='pole.ps'
+
+dir='../models/modcII'
+rstar=2.09
+tstar=4.e3
+
+nap=1   ;total number of apertures  (currently set to 5, but you can change
+  ;it in srcdust/tts.txt)
+iap=1  ;aperture you want plotted (1 to nap)
+
+
+title=''  ;put in a title if you want
+xr=[0.1,1000.]  ;yrange of plot, [ymin, ymax];  make it large for class 0 source
+;yr=[.01,-.01]  ;yrange of plot, [ymin, ymax];  class III
+yr=[.05,-.05]  ;yrange of plot, [ymin, ymax];  class II
+;yr=[.2,-.3]  ;yrange of plot, [ymin, ymax];  class I
+;yr=[.2,-.4]  ;yrange of plot, [ymin, ymax];  class 0-I
+
+;these won't change unless you change ttsre (srcdust/tts.txt)
+nfreq=150
+ninc=20l
+
+;note, this plots every other inclination. change pol.pro, line 47 if you want them all
+
+nsmooth=4
+pole,dir,title,nfreq,ninc,xr,yr,nap,iap,nsmooth
+
+if !d.name eq 'PS' then device,/close
+

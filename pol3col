@@ -1,0 +1,52 @@
+;you can use this with data or models.
+;if models, make fits files first (@runfits)
+
+lrange=3   ;10^(lrange) is dynamic range
+
+;JHK
+minflux=0.1   ;MJy/sr
+file1='e_2J_I_80.0_0.0_I_img.fits'
+file2='e_2H_I_80.0_0.0_I_img.fits'
+file3='e_2K_I_80.0_0.0_I_img.fits'
+
+;IRAC
+;minflux=0.1   ;MJy/sr
+;file1='e_I1_I_80.fits'
+;file2='e_I2_I_80.fits'
+;file3='e_I4_I_80.fits'
+
+;cool combination, shows dust in cavity at MIPS 24.
+;minflux=0.5   ;MJy/sr
+;file1='e_I2_I_80.fits'
+;file2='e_I4_I_80.fits'
+;file3='e_M1_I_80.fits'
+
+;minflux=10.   ;MJy/sr
+;file1='e_I4_I_80.fits'
+;file2='e_M1_I_80.fits'
+;file3='e_M2_I_80.fits'
+
+;minflux=10.   ;MJy/sr
+;file1='e_XA_I_80.fits'
+;file2='e_XC_I_80.fits'
+;file3='e_XD_I_80.fits'
+
+; unit = 'intensity' (MJy/sr) or 'flux' (mJy/pixel) 
+unit='intensity'
+
+;get pixel size in "; we wrote a fits keyword in the model fits header
+im=readfits(file1,head)
+pixsizx=sxpar(head,'PXSCAL1')
+pixsizy=sxpar(head,'PXSCAL2')
+;the keywords vary in data so read in your keyword or just type it in here
+;convert to " if necessary
+;pixsizx=0.6
+;pixsizy=0.6
+
+;min-max values to display
+;valmin=0.01  ;good for IRAC, MSX
+;valmin=1.0  ;IRAC+MIPS
+;valmin=5.   ;MIPS, IRAS
+valmax=valmin*1.e4
+
+im3col,file1,file2,file3,unit,pixsizx,pixsizy,minflux,lrange

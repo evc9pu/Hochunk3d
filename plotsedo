@@ -1,0 +1,100 @@
+!p.multi=[0,2,2]
+set_plot,'ps'
+if !d.name eq 'PS' then device,xsize=6.5,ysize=5.,/inches,$
+/portrait,xoffset=0.2,yoffset=2,bits=24,/color,$
+;filename='sed4o.ps'
+filename='sed4o.eps',/encapsulated,/CMYK
+
+;dir='../models/modcII_warp_spot'
+dir='../models/modcII'
+;dir='../models/test'
+iap=1   ;aperture, ranges from 1 to nap = number of apertures
+   ;release code is set for nap=5, but you can change it in srcdust/tts.txt
+Jy=0   ;0 for plotting lam*Flam, 1 for plotting Jy
+d=140.
+Av=0.
+iplotstar=1
+col=0 ;line color for sedoe_fits call
+linesty=0   ; for sedoe_fits also
+
+cs=0.8	;character size
+
+;low-mass TTS modc* models
+;stellar parameters for scaling stellar atmosphere file
+rstar=2.09
+tstar=4000.d0
+cplanck='no'  ;'yes' for plotting planck file, 'no' for input atmosphere file
+atfile='../models/parfiles/kt04000g+3.5z+0.0.ascii'
+d=140.d0
+Av=0.0   ;assumes foreground dust is similar to ISM.
+
+;VeLLO
+;atfile='../models/parfiles/lte30-3.0-2.0.spec.ascii'
+;tstar=3000.d0
+;rstar=1.d0
+
+;RCRB
+;Jy=0   ;0 for plotting lam*Flam, 1 for plotting Jy
+;rstar=70.d0
+;tstar=6750.d0
+;atfile='../models/parfiles/kt06750g+2.0z+0.5.ascii'
+;d=1000.
+;Av=0.45
+
+;overplotting input stellar spectrum
+planck='no'  ;'yes' for plotting planck function, 'no' for input atmosphere file
+
+lumscale=1.d0   ;luminosity scale factor, default=1, but you might be trying
+;to fit some data so this lets you see how much you need to change it
+;(run lum.pro to see what rstar and tstar you need).
+
+it1=0
+it2=9
+ip1=0
+ip2=0
+;ip2=39
+	
+isphav=0
+
+sedo_fits,dir,rstar,tstar,iplotstar,lumscale,'total',d,iap,$
+	Jy,atfile,planck,Av,'a',cs,it1,it2,ip1,ip2,isphav
+sedo_fits,dir,rstar,tstar,iplotstar,lumscale,'stellar origin',d,iap,$
+	Jy,atfile,planck,Av,'s',cs,it1,it2,ip1,ip2,isphav
+sedo_fits,dir,rstar,tstar,iplotstar,lumscale,'disk origin',d,iap,$
+	Jy,atfile,planck,Av,'d',cs,it1,it2,ip1,ip2,isphav
+sedo_fits,dir,rstar,tstar,iplotstar,lumscale,'envelope origin',d,iap,$
+	Jy,atfile,planck,Av,'e',cs,it1,it2,ip1,ip2,isphav
+
+;azimuthal average
+;sedo_azav_fits,dir,rstar,tstar,iplotstar,lumscale,'total',d,iap,$
+;	Jy,atfile,planck,Av,'a',cs,it1,it2,ip1,ip2
+;sedo_azav_fits,dir,rstar,tstar,iplotstar,lumscale,'stellar origin',d,iap,$
+;	Jy,atfile,planck,Av,'s',cs,it1,it2,ip1,ip2
+;sedo_azav_fits,dir,rstar,tstar,iplotstar,lumscale,'disk origin',d,iap,$
+;	Jy,atfile,planck,Av,'d',cs,it1,it2,ip1,ip2
+;sedo_azav_fits,dir,rstar,tstar,iplotstar,lumscale,'envelope origin',d,iap,$
+;	Jy,atfile,planck,Av,'e',cs,it1,it2,ip1,ip2
+
+;for no fits i/o
+;dir='../models/modcII_unf'
+;sedo,dir,rstar,tstar,iplotstar,lumscale,'total',d,iap,$
+;	Jy,atfile,planck,Av,'a',cs
+;sedo,dir,rstar,tstar,iplotstar,lumscale,'stellar origin',d,iap,$
+;	Jy,atfile,planck,Av,'s',cs
+;sedo,dir,rstar,tstar,iplotstar,lumscale,'disk origin',d,iap,$
+;	Jy,atfile,planck,Av,'d',cs
+;sedo,dir,rstar,tstar,iplotstar,lumscale,'envelope origin',d,iap,$
+;	Jy,atfile,planck,Av,'e',cs
+
+;;for just the peeled directions
+;oplot=0
+;sedoe_fits,dir,rstar,tstar,iplotstar,lumscale,'total',d,iap,Jy,atfile,cplanck,Av,'a',cs,oplot,linesty,col
+;sedoe_fits,dir,rstar,tstar,iplotstar,lumscale,'stellar origin',d,iap,Jy,atfile,cplanck,Av,'s',cs,oplot,linesty,col
+;sedoe_fits,dir,rstar,tstar,iplotstar,lumscale,'disk origin',$
+;      d,iap,Jy,atfile,cplanck,Av,'d',cs,oplot,linesty,col
+;sedoe_fits,dir,rstar,tstar,iplotstar,lumscale,'envelope origin',d,iap,Jy,atfile,cplanck,Av,'e',cs,oplot,linesty,col
+
+
+
+if !d.name eq 'PS' then device,/close
+

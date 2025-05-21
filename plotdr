@@ -1,0 +1,20 @@
+set_plot,'ps'
+
+device,/inches,xsize=6,ysize=5.,xoffset=1,yoffset=1,$
+	filename='dr.ps',/color
+
+;device,/inches,xsize=6.5,ysize=5.5,xoffset=1,yoffset=1,$
+;	filename='tr.eps',/encapsulated,/color
+
+!p.multi=[0,1,1]
+
+xtit='r(AU)'
+ytit='density (gm/cm^3)'
+xmar=[8,0]
+ymar=[3,2]
+rin=1.
+rout=20000.
+dinc,'../models/BstarcI','density',xtit,ytit,$
+	xmar,ymar,rin,rout
+
+device,/close

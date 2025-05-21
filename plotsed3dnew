@@ -1,0 +1,91 @@
+!p.multi=[0,1,1]
+set_plot,'ps'
+
+dir='/Volumes/camrock4/aurora/models/modc2/'
+;titl='Two hotspots + warps'
+atfile='../models/parfiles/kt04000g+3.5z-1.5.ascii'
+titl='1. Two hotspots + warps'     ;put in title between ' ' if you want
+;titl='2. Bigger warps'    
+;titl='3. Lower hotspot flux'     
+;titl='4. Bigger warp, lower hotspot flux'     
+;titl='5. Bigger warp, no spot'    
+;titl='6. Bigger, wider warp, no spot'    
+;titl='7. Two hotspots, no warp'    
+;titl='8. One hotspot + warp'    
+;titl='9. Increase R_min_disk x 3'     
+;titl='10. Increase R_min_disk x 5'     
+;titl='11. Change viewing angle'     
+;titl='12. Add envelope'  
+; titles for spiral models
+;titl= '1. LEXP = 3, SEXP = 20, SSC = 20'
+;titl= '2. LEXP=6, SEXP=40, SSC=4'
+;titl= '3. LEXP=3, SEXP=40, SSC=4'
+;titl= '4. LEXP=1.5, SEXP=20,SSC=1'   
+;titl = '2-arm spiral'
+; titles for variable accretion models 
+;titl= '1. Variable Accretion: Alpha'
+titl= '2. Variable Accretion: Radius' 
+;titl= '3. Variable Accretion: Temp'
+iap=1   ;aperture, ranges from 1 to nap = total number of apertures; 
+  ;release code is set for nap=5, but you can change it in srcdust/tts.txt 
+Jy=0   ;0 for plotting lam*Flam, 1 for plotting Jy
+d=430.
+Av=0.  ;assumes foreground dust is similar to ISM.
+liml=0.6
+limu=-0.1
+;liml=0.25
+;limu=-0.25
+;liml=1.25
+;limu=-0.75
+;liml=0.5
+;limu=-0.2
+pmin=0
+pmax=2.0
+
+nfreq=150  ; look in mctherm.par
+
+cs=0.9   ;character size in plot
+
+;stellar parameters for scaling stellar atmosphere file
+;rstar=8.525d0
+;tstar=4278.8d0
+rstar= 2.19
+tstar=4187
+;rstar=2.09
+;tstar=4000.
+planck='no'  ;'yes' for plotting planck file, 'no' for input atmosphere file
+
+lumscale=1.0d0    ;luminosity scale factor, default=1, but you might be trying
+;to fit some data so this lets you see how much you need to change it
+;(run lum.pro to see what rstar and tstar you need).
+
+;set up file name parsing
+thetarrst=['65.0','65.0','65.0','65.0','65.0','65.0','65.0','65.0','65.0','65.0','65.0','65.0','65.0','65.0','65.0','65.0','65.0','65.0']
+phiarrst=['0.0','20.0','40.0','60.0','80.0','100.0','120.0','140.0','160.0','180.0','200.0','220.0','240.0','260.0','280.0','300.0','320.0','340.0']
+phiarr=[0.0,20.0,40.0,60.0,80.0,100.0,120.0,140.0,160.0,180.0,200.0,220.0,240.0,260.0,280.0,300.0,320.0,340.0]
+
+;override = 1 overrides the value of npeel in the peel_flux*.dat files
+override=1
+npeelov=18
+
+ismooth=1
+inctitl='yes'
+pl='sed'
+device,xsize=3.23,ysize=2.7,/inches,bits=24,filename='sed.eps',/color,/encapsulated
+sed3dnew,dir,rstar,tstar,lumscale,titl,inctitl,d,iap,Jy,atfile,planck,Av,cs,liml,limu,ismooth,pl,thetarrst,phiarrst,phiarr,nfreq,pmin,pmax,override,npeelov
+device,/close
+
+ismooth=3
+inctitl='no'
+pl='lc'
+device,xsize=3.23,ysize=2.7,/inches,bits=24,filename='lc.eps',/color,/encapsulated
+sed3dnew,dir,rstar,tstar,lumscale,titl,inctitl,d,iap,Jy,atfile,planck,Av,cs,liml,limu,ismooth,pl,thetarrst,phiarrst,phiarr,nfreq,pmin,pmax,override,npeelov
+device,/close
+
+ismooth=5
+inctitl='yes'
+pl='pol'
+device,xsize=3.23,ysize=2.7,/inches,bits=24,filename='pol.eps',/color,/encapsulated
+sed3dnew,dir,rstar,tstar,lumscale,titl,inctitl,d,iap,Jy,atfile,planck,Av,cs,liml,limu,ismooth,pl,thetarrst,phiarrst,phiarr,nfreq,pmin,pmax,override,npeelov
+device,/close
+

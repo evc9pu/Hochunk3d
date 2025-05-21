@@ -1,0 +1,42 @@
+!p.multi=[0,1,1]
+set_plot,'ps'
+if !d.name eq 'PS' then device,xsize=6.,ysize=4,/inches,$
+/portrait,xoffset=0.2,yoffset=2,bits=24,/color,$
+;filename='sed_init.ps'
+filename='sed_init.eps',/encapsulated
+
+Jy=0   ;0 for plotting lam*Flam, 1 for plotting Jy
+titl=' '     ;put in title between ' ' if you want
+cs=1.5   ;character size in plot
+d=140.  ; distance in pc
+Av=0.0   ;assumes foreground dust is similar to ISM.
+ifilt=1  ;convolve with filter functions?  1=yes, 0=no.  prints to a file
+
+;overplotting input stellar spectrum
+cplanck='no'  ;'yes' for plotting planck file, 'no' for input atmosphere file
+iplotstar = 1  ; 1 for plotting stellar spectrum, 0 for not
+
+lumscale=1.0d0    ;luminosity scale factor, default=1, but you might be trying
+;to fit some data so this lets you see how much you need to change it
+;(run lum.pro to see what rstar and tstar you need).
+
+;low-mass TTS modc* model
+;stellar parameters for scaling stellar atmosphere file
+dir='../models/modcII'
+rstar=2.09
+tstar=4000.d0
+atfile='../models/parfiles/kt04000g+4.0z-2.0.ascii'
+;for peeled spectrum, non-fits format
+
+;first plot, always set oplot=0
+oplot=0
+linesty=0
+sedi_fits,dir,rstar,tstar,iplotstar,lumscale,titl,d,Jy,atfile,cplanck,cs,oplot,linesty
+
+;dir='../models/modcI/'
+oplot=1
+;sedi_fits,dir,rstar,tstar,iplotstar,lumscale,titl,d,Jy,atfile,cplanck,cs,oplot,linesty
+
+
+if !d.name eq 'PS' then device,/close
+

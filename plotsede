@@ -1,0 +1,73 @@
+!p.multi=[0,1,1]
+set_plot,'ps'
+if !d.name eq 'PS' then device,xsize=6.,ysize=4,/inches,$
+/portrait,xoffset=0.2,yoffset=2,bits=24,filename='sede.ps',/color
+
+iap=1  ;aperture you want plotted (1 to nap)
+Jy=0   ;0 for plotting lam*Flam, 1 for plotting Jy
+d=1000.
+Av=0.  ;foreground Av to add in
+
+titl=''     ;put in title if you want
+cs=1.5   ;character size in plot
+
+;stellar parameters for scaling stellar atmosphere file
+;rstar=2.09d0
+;tstar=4000.d0
+rstar=4.35
+tstar=10000.
+planck='no'  ;'yes' for plotting planck file, 'no' for input atmosphere file
+atfile='../models/parfiles/kt10000g+4.0z-2.0.ascii'
+iplotstar = 1  ; 1 for plotting stellar spectrum, 0 for not
+
+lumscale=1.0d0    ;luminosity scale factor, default=1, but you might be trying
+;to fit some data so this lets you see how much you need to change it
+;(run lum.pro to see what rstar and tstar you need).
+
+dir='../models/spot-19'
+oplot=0
+col=0
+linesty=0
+sede,dir,rstar,tstar,iplotstar,lumscale,titl,d,iap,Jy,atfile,planck,Av,'a',cs,oplot,linesty,col
+
+dir='../models/spot-19-pah'
+oplot=1
+col=55
+linesty=0
+sede,dir,rstar,tstar,iplotstar,lumscale,titl,d,iap,Jy,atfile,planck,Av,'a',cs,oplot,linesty,col
+
+dir='../models/spot-19-isrf'
+oplot=1
+col=155
+linesty=0
+;sede,dir,rstar,tstar,iplotstar,lumscale,titl,d,iap,Jy,atfile,planck,Av,'a',cs,oplot,linesty,col
+
+i1=3
+i2=3
+oplot=1
+linesty=0
+;sed,dir,rstar,tstar,iplotstar,lumscale,titl,d,iap,Jy,atfile,planck,Av,'a',cs,oplot,i1,i2,linesty
+
+
+i1=2
+i2=2
+oplot=1
+linesty=0
+;sed,dir,rstar,tstar,iplotstar,lumscale,titl,d,iap,Jy,atfile,planck,Av,'a',cs,oplot,i1,i2,linesty
+
+oplot=1
+dir='/Users/bwhitney/software/fortran/radeq/fract/pah/models/bub1'
+linesty=1
+col=155
+;sede,dir,rstar,tstar,iplotstar,lumscale,titl,d,iap,Jy,atfile,planck,Av,'a',cs,oplot,linesty,col
+
+i1=2
+i2=2
+oplot=1
+linesty=0
+;sed,dir,rstar,tstar,iplotstar,lumscale,titl,d,iap,Jy,atfile,planck,Av,'a',cs,oplot,i1,i2,linesty
+
+linesty=0
+
+if !d.name eq 'PS' then device,/close
+

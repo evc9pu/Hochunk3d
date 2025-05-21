@@ -1,0 +1,44 @@
+dir='../models/modcII_unf/'
+Av=0.0
+anglethet='80.0'
+anglephi='0.0'
+rmaxi=400.   ;use value from mctherm.par (units of AU)
+
+nx=149  ;nxhst in tts_mod.f90
+;note:  pixel size is 2*rmaxi(au)/nx/d(pc), will be added to fits 
+  ;header
+
+gsig=0.01 ;FWHM of gaussian in AU; this should vary with wavelength
+makefits,dir,d,rmaxi,nx,gsig,'e_VV_'+anglethet+'_'+anglephi+'_I_img',0.55,Av   ;0.55 is wavelength
+makefits,dir,d,rmaxi,nx,gsig,'e_RR_'+anglethet+'_'+anglephi+'_I_img',0.67,Av   
+makefits,dir,d,rmaxi,nx,gsig,'e_II_'+anglethet+'_'+anglephi+'_I_img',0.8,Av   
+makefits,dir,d,rmaxi,nx,gsig,'e_2J_'+anglethet+'_'+anglephi+'_I_img',1.23,Av 
+makefits,dir,d,rmaxi,nx,gsig,'e_2H_'+anglethet+'_'+anglephi+'_I_img',1.66,Av 
+makefits,dir,d,rmaxi,nx,gsig,'e_2K_'+anglethet+'_'+anglephi+'_I_img',2.16,Av 
+makefits,dir,d,rmaxi,nx,gsig,'e_I1_'+anglethet+'_'+anglephi+'_I_img',3.55,Av 
+makefits,dir,d,rmaxi,nx,gsig,'e_I2_'+anglethet+'_'+anglephi+'_I_img',4.50,Av 
+makefits,dir,d,rmaxi,nx,gsig,'e_I3_'+anglethet+'_'+anglephi+'_I_img',5.73,Av 
+makefits,dir,d,rmaxi,nx,gsig,'e_I4_'+anglethet+'_'+anglephi+'_I_img',7.87,Av 
+;gsig=0.01  ;FWHM of gaussian in AU; this should vary with wavelength
+makefits,dir,d,rmaxi,nx,gsig,'e_M1_'+anglethet+'_'+anglephi+'_I_img',23.68,Av 
+makefits,dir,d,rmaxi,nx,gsig,'e_M2_'+anglethet+'_'+anglephi+'_I_img',71.42,Av 
+makefits,dir,d,rmaxi,nx,gsig,'e_M3_'+anglethet+'_'+anglephi+'_I_img',155.9,Av 
+
+;;polarized flux images
+d=140.
+;gsig=0.01
+makefitspol,dir,d,rmaxi,nx,gsig,'e_2H_'+anglethet+'_'+anglephi+'_I_img','e_2H_'+anglethet+'_'+anglephi+'_Q_img','e_2H_'+anglethet+'_'+anglephi+'_U_img'
+
+;;polarization maps
+;gsig=0.01
+;Av=0.
+;makefits,dir,d,rmaxi,nx,gsig,'e_2H_'+anglethet+'_'+anglephi+'_I_img',1.66,Av
+;makefits,dir,d,rmaxi,nx,gsig,'e_2H_'+anglethet+'_'+anglephi+'_Q_img',1.66,Av
+;makefits,dir,d,rmaxi,nx,gsig,'e_2H_'+anglethet+'_'+anglephi+'_U_img',1.66,Av
+
+;;polarization maps
+;gsig=0.01
+;Av=0.
+;makefits,dir,d,rmaxi,nx,gsig,'e_2H_'+anglethet+'_'+anglephi+'_I_img',1.66,Av
+;makefits,dir,d,rmaxi,nx,gsig,'e_2H_'+anglethet+'_'+anglephi+'_Q_img',1.66,Av
+;makefits,dir,d,rmaxi,nx,gsig,'e_2H_'+anglethet+'_'+anglephi+'_U_img',1.66,Av

@@ -1,0 +1,51 @@
+!p.multi=[0,2,2]
+set_plot,'ps'
+if !d.name eq 'PS' then device,xsize=6.5,ysize=5.,/inches,$
+/portrait,xoffset=0.2,yoffset=2,bits=24,filename='sed4te.ps',/color
+
+dir='../models/modcII'
+iap=1   ;aperture, ranges from 1 to nap = number of apertures
+   ;release code is set for nap=5, but you can change it in srcdust/tts.txt
+Jy=0   ;0 for plotting lam*Flam, 1 for plotting Jy
+d=140.
+Av=0.
+
+cs=0.8	;character size
+
+;stellar parameters for scaling stellar atmosphere file
+rstar=2.09
+tstar=4000.
+cplanck='no'  ;'yes' for plotting planck file, 'no' for input atmosphere file
+atfile='../models/parfiles/3008537_atmos.par'
+
+iplotstar = 0  ; 1 for plotting stellar spectrum, 0 for not
+
+lumscale=1.d0   ;luminosity scale factor, default=1, but you might be trying
+;to fit some data so this lets you see how much you need to change it
+;(run lum.pro to see what rstar and tstar you need).
+
+
+;which viewing angles to plot, i1=start (0 min), i2=end
+i1=0
+i2=19
+
+thetst='80.0'
+phist='0.0'
+
+col=155
+oplot=0
+dir='../models/modcII'
+linesty=0
+sede_fits,dir,rstar,tstar,iplotstar,lumscale,'total',d,iap,Jy,atfile,$
+	cplanck,Av,'a',cs,oplot,linesty,col
+sede_fits,dir,rstar,tstar,iplotstar,lumscale,'thermal',d,iap,Jy,atfile,$
+	cplanck,Av,'t',cs,oplot,linesty,col
+sede_fits,dir,rstar,tstar,iplotstar,lumscale,'direct stellar/hotspot',d,$
+	iap,Jy,atfile,cplanck,Av,'d',cs,oplot,linesty,col
+sede_fits,dir,rstar,tstar,iplotstar,lumscale,'scattered',d,$
+	iap,Jy,atfile,cplanck,Av,'s',cs,oplot,linesty,col
+
+
+
+if !d.name eq 'PS' then device,/close
+

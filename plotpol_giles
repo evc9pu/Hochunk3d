@@ -1,0 +1,45 @@
+
+!p.multi=[0,1,2]
+set_plot,'ps'
+;if !d.name eq 'PS' then device,xsize=6.,ysize=5.,/inches,$
+if !d.name eq 'PS' then device,xsize=3.,ysize=3.,/inches,$
+/portrait,xoffset=1.0,yoffset=1,/color,/encapsulated,bits=24,filename='pol.eps'
+
+dir='../../../models_tmp/modcII_www/'
+;dir='../../../models_tmp/modcII_0.004msun_www/'
+;dir='../../../models_tmp/modcII_www005/'
+;dir='../../../models_tmp/modcII_www006/'
+
+nap=1
+
+iap=1   ;aperture, ranges from 1 to nap = total number of apertures;
+rstar=2.09
+tstar=4.e3
+
+i1=0
+i2=9
+
+title=''  ;put in a title if you want
+xr=[1.,1000.]  
+
+nsmooth=5
+
+oplot=0
+linestyl=0
+
+ym=[3,2]
+xt=''
+ipeel=1
+title='i=90!uo'
+title='!4h!3=90!uo'
+pole_giles,dir,title,xr,[0,2.],nap,iap,nsmooth,oplot,ipeel,ccol,linestyl,ym,xt
+
+ym=[4,1]
+xt='Wavelength (!4l!3m)'
+ipeel=0
+title='i=45!uo'
+title='!4h!3=45!uo'
+pole_giles,dir,title,xr,[0,1.],nap,iap,nsmooth,oplot,ipeel,ccol,linestyl,ym,xt
+
+if !d.name eq 'PS' then device,/close
+

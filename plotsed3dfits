@@ -1,0 +1,66 @@
+!p.multi=[0,1,1]
+set_plot,'ps'
+
+titl=''
+;titl='Two hotspots + warps'
+atfile='../models/parfiles/kt04000g+3.5z-1.5.ascii'
+iap=1   ;aperture, ranges from 1 to nap = total number of apertures; 
+  ;release code is set for nap=5, but you can change it in srcdust/tts.txt 
+Jy=0   ;0 for plotting lam*Flam, 1 for plotting Jy
+d=140.
+Av=0.  ;assumes foreground dust is similar to ISM.
+
+dir='../models/modcII_warp_spot/'
+liml=0.5
+limu=-0.1
+pmin=0.5
+pmax=1.5
+
+;dir='../models/modcII_misalign/'
+;liml=0.5
+;limu=-3.5
+;pmin=0.
+;pmax=15.
+
+nfreq=150  ; look in mctherm.par
+
+cs=1.0   ;character size in plot
+
+;stellar parameters for scaling stellar atmosphere file
+;rstar=8.525d0
+;tstar=4278.8d0
+rstar= 2.19
+tstar=4187
+;rstar=
+;tstar=4000.
+planck='no'  ;'yes' for plotting planck file, 'no' for input atmosphere file
+
+lumscale=1.0d0    ;luminosity scale factor, default=1, but you might be trying
+;to fit some data so this lets you see how much you need to change it
+;(run lum.pro to see what rstar and tstar you need).
+
+;override = 1 overrides the value of npeel in the peel_flux*.dat files
+override=1
+npeelov=18
+
+ismooth=1
+inctitl='no'
+pl='sed'
+device,xsize=3.23,ysize=2.7,/inches,bits=24,filename='sed.eps',/color,/encapsulated
+sed3d_fits,dir,rstar,tstar,lumscale,titl,inctitl,d,iap,Jy,atfile,planck,Av,cs,liml,limu,ismooth,pl,pmin,pmax,override
+device,/close
+
+ismooth=3
+inctitl='no'
+pl='lc'
+device,xsize=3.23,ysize=2.7,/inches,bits=24,filename='lc.eps',/color,/encapsulated
+sed3d_fits,dir,rstar,tstar,lumscale,titl,inctitl,d,iap,Jy,atfile,planck,Av,cs,liml,limu,ismooth,pl,pmin,pmax,override
+device,/close
+
+ismooth=5
+inctitl='no'
+pl='pol'
+device,xsize=3.23,ysize=2.7,/inches,bits=24,filename='pol.eps',/color,/encapsulated
+sed3d_fits,dir,rstar,tstar,lumscale,titl,inctitl,d,iap,Jy,atfile,planck,Av,cs,liml,limu,ismooth,pl,pmin,pmax,override
+device,/close
+

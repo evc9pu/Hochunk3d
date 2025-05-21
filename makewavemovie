@@ -1,0 +1,14 @@
+
+;use test switch to just plot 1 wavelength (I-band).  use this to set intensity scaling.
+iscale=10.
+thet='10.0'
+phi='0.0'
+
+moviewave,'../models/modcII_gap_spiral/',thet,phi,iscale,/test
+
+;when you are happy with the scaling at 1 micron (set by iscale), then run without the test switch to get all the images.
+
+;moviewave,'../models/modcII_gap_spiral/',thet,phi,iscale
+
+;if it's way too bright or faint at other wavelengths, you can rescale as desired.
+

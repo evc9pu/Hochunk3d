@@ -1,0 +1,54 @@
+;you can use this with data or models.
+;if models, make fits files first (@runfits)
+
+lrange=3   ;10^(lrange) is dynamic range
+
+;default minflux values are for modcI model.  vary for the other ones.
+
+;;optical  VRI
+;minflux=0.01   ;MJy/sr
+;file1='e_VV_80.0_0.0_I_img.fits'
+;file2='e_RR_80.0_0.0_I_img.fits'
+;file3='e_II_80.0_0.0_I_img.fits'
+
+;JHK 3-color
+minflux=0.15   ;MJy/sr
+file1='e_2J_80.0_0.0_I_img.fits'
+file2='e_2H_80.0_0.0_I_img.fits'
+file3='e_2K_80.0_0.0_I_img.fits'
+
+;IRAC 3-color
+minflux=0.05   ;MJy/sr
+file1='e_I1_80.0_0.0_I_img.fits'
+file2='e_I2_80.0_0.0_I_img.fits'
+file3='e_I4_80.0_0.0_I_img.fits'
+
+;;cool combination, shows dust in cavity at MIPS 24.
+;minflux=0.1   ;MJy/sr
+;file1='e_I2_80.0_0.0_I_img.fits'
+;file2='e_I4_80.0_0.0_I_img.fits'
+;file3='e_M1_80.0_0.0_I_img.fits'
+
+;;minflux=20.   ;MJy/sr
+;file1='e_I4_80.0_0.0_I_img.fits'
+;file2='e_M1_80.0_0.0_I_img.fits'
+;file3='e_M2_80.0_0.0_I_img.fits'
+
+;;minflux=50.   ;MJy/sr
+;file1='e_M1_80.0_0.0_I_img.fits'
+;file2='e_M2_80.0_0.0_I_img.fits'
+;file3='e_M3_80.0_0.0_I_img.fits'
+
+; unit = 'intensity' (MJy/sr) or 'flux' (mJy/pixel) 
+unit='intensity'
+
+;get pixel size in "; we wrote a fits keyword in the model fits header
+im=readfits(file1,head)
+pixsizx=sxpar(head,'PXSCAL1')
+pixsizy=sxpar(head,'PXSCAL2')
+;the keywords vary in data so read in your keyword or just type it in here
+;convert to " if necessary
+;pixsizx=0.6
+;pixsizy=0.6
+
+im3col,file1,file2,file3,unit,pixsizx,pixsizy,minflux,lrange

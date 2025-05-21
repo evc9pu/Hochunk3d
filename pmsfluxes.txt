@@ -1,0 +1,4 @@
+PMS fluxes at J,H,K,3.6,4.5,5.8,8,24,70,160
+each row plots the 10 wavelengths in order as above and K-band polarization in the last column
+10 inclinations per model
+units are Jy
