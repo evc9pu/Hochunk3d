@@ -1,0 +1,27 @@
+1)  move
+NO = CSPOT = YES if spots on star, NO if not
+45. = SPOTLAT = latitude of spot (degrees)
+1 = NSPOT = number of spots (1 or 2)
+
+to
+'**** Disk accretion properties ****'
+
+2) change above to
+'**** Disk/star accretion properties ****'
+
+3)  change
+ALPHA to ALPHA/MDOT
+
+4)  delete 
+FSPOT  line
+
+5)  add
+NO = CTEMP = YES to read spot temperature, NO to read Fractional spot size (computes one from the other)
+0.01 = TSPOT/FSPOT = Temperature of spot (CTEMP=YES) or Fractional area of hot spot (CTEMP=NO)
+
+after 
+1 = NSPOT line
+
+6) set IMCUBE = NO
+
+7)  run code for a few seconds as a check
