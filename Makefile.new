@@ -1,0 +1,129 @@
+#******************************** G77/Linux Fortran ************************
+FC     =       g77
+#EXTRA_OPT =     -malign-double -fforce-mem -fforce-addr \
+#                -ffast-math -funroll-all-loops
+EXTRA_OPT =
+### May want to experiment by adding the extra optimization flags to get
+### better runtime. But then again, maybe not.
+FFLAGS  =       -O2 $(EXTRA_OPT) 
+#LDFLAGS = 
+time_it         = get_cpu_sun
+
+#******************************** PGI Fortran ************************
+#FC      =       pgf77
+#FFLAGS  =      -fast
+#LDFLAGS =	-fast 
+#time_it         = get_cpu_sun
+
+#***************************** ABSOFT Fortran ************************
+
+#FC     =       f77
+#FFLAGS  =     -f -W -s -N15 -g -N11
+#time_it =     get_cpu_sun
+### -f converts to lower case 
+### -W allows > 72 chars/line 
+### -s force storage to be static and initialized to 0
+### -N15 apply underscore to names, avoids name conflicts with system libraries
+### -C check array boundaries and generate better runtime errors (slows code).
+### -g debug
+### -N3 include record length info for sequential, unformatted files
+### -N51 interpret RECL specifier as the number of 32-bit words in a record
+#LDFLAGS = -lU77 
+### libU77.a has all the stuff in the Sun libraries, like ETIME
+
+#******************************** Sun Fortran ************************
+#FC     =       f77
+#FFLAGS  =      -fast -O
+#LDFLAGS =	-fast -O
+#time_it         = get_cpu_sun
+#
+#******************************** Lahey-Fujitsu lf95 ************************
+##
+#FC      =       lf95
+### --chk is *really* slow but good for debugging
+##FFLAGS  =       --tpp --nsav -O --nwarn -c --chk
+#FFLAGS  =       --tpp --nsav -O --nwarn -c 
+#LDFLAGS =
+#time_it         = get_cpu_sun
+##
+#************************ Mac XLF ******************************************
+
+#FC     =       xlf
+#EXTRA_OPT =    -qextname -qarch -qtune -qcache -qhot
+#FFLAGS =       -O5 $(EXTRA_OPT) -qarch -qtune -qcache -qhot
+#LDFLAGS  = 
+#time_it         = get_cpu_sun
+
+#****************************************************************************
+
+OBJSB	=	check.o \
+		$(time_it).o \
+		densdiskg.o \
+		densenv.o \
+		diskflux.o \
+		dust.o \
+		dustmat.o \
+		dusttemp.o \
+		envset.o \
+		erfc.o \
+		errmsg.o \
+		filt_nu.o \
+		find_wall.o \
+		find_wall_1D.o \
+		find_wall_2D.o \
+		findangle3.o \
+		gammln.o \
+		gammp.o \
+		gammq.o \
+		gcf.o \
+		getset.o \
+		gridset.o \
+		gridset_hseq.o \
+		gser.o \
+                hseq.o \
+		initarr.o \
+		initp.o \
+		initp_ps.o \
+		initpacc.o \
+		initpabs.o \
+                initpout.o \
+		isotrp.o \
+                locate.o \
+		locate2.o \
+		mathsubs.o \
+		namer.o \
+		newdisktherm.o \
+		newtts.o \
+		output.o \
+		peeloff_3d.o \
+		phiface.o \
+		plancknu.o \
+		propagate.o \
+		radface.o \
+		random.o \
+		reapar_public.o \
+		reemit.o \
+		samptabl.o \
+		setup.o \
+		setup_wave.o \
+		splines.o \
+		starbarb.o \
+		stokes.o \
+		stokespeel.o \
+		subs_g77.o \
+                Rdist.o \
+		tauint_3d.o \
+		testgrid.o \
+		tfinal.o \
+		thetaface.o \
+		vger_3d.o \
+		wrimsg.o \
+		zerod.o 
+
+ttsre:		$(OBJSB)
+		$(FC) $(OBJSB) $(LDFLAGS) -o ttsre
+
+tarfile:;	tar cvf ttsre.tar *.f *.txt *.par *.com mctherm.par Make* 
+
+clean:;		/bin/rm -f *.o
+

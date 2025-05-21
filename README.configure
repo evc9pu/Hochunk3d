@@ -1,0 +1,20 @@
+some configure options.  Type "make clean" before and "make" afterwards.
+
+#fits output, give it path to the cfitsio library (install from xxx)
+./configure --enable-fits --with-cfitsio=/usr/local/cfitsio/lib  
+./configure --enable-fits --with-cfitsio=/opt/local/lib  
+./configure --enable-fits --with-cfitsio=/Users/bwhitney/Dropbox/software/hochunk3d/src
+#uw computers
+./configure --enable-fits --with-cfitsio=/usr/local/lib
+#jack
+./configure --enable-fits --with-cfitsio=/d/rambo9/honor/newestcodes/hochunk3d/src
+
+
+./configure --enable-debug
+
+./configure FC=gfortran
+
+
+
+
+

@@ -1,179 +1,165 @@
 ' =================== Parameter file ==================='
 
 '**** Preliminaries ****'
-40000000 = NP = Number of photons from central star
-1000000 = NPMIN = Minimum number of photons for Lucy temperature calculation
-0 = NIMIN = Minimum number of iterations (Lucy temperature and/or HSEQ) 
-5 = NIMAX = Maximum number of iterations (Lucy temperature and/or HSEQ)
-YES = CPEEL = YES for peeling, NO for standard MC
-YES = CLUCY = YES to use Lucy method for T-corr, NO for Bjorkman & Wood
--2211 = I1 = Random number seed
-100000 = IWRITE = output timing information every IWRITE photons
-YES = CWARN = YES to print warnings & errors, NO to not.
-'../parfiles' = PARDIR = directory containing atmosphere, dust, and filter files
-NO = DENSINPUT = YES for reading in density grid, NO for calculating analytic
+         100000 =         NP = Number of photons from central star
+          10000 =      NPMIN = Minimum number of photons for Lucy temperature calculation
+              0 =      NIMIN = Minimum number of iterations for Lucy temperature calculation
+              1 =      NIMAX = Maximum number of iterations for Lucy temperature calculation
+            YES =      CPEEL = YES for peeling, NO for standard MC
+            YES =      CLUCY = YES to use Lucy method for T-corr, NO for Bjorkman & Wood
+         -2211 =         I1 = Random number seed
+          100000 =     IWRITE = output timing information every IWRITE photons
+            YES =      CWARN = YES to print warnings & errors, NO to not.
+  '../parfiles' =     PARDIR = directory containing atmosphere, dust, and filter files
 
 '**** Central Source Properties ****'
-YES = CLIMB = YES for limb darkening of central source, NO for not
-NO = CPLANCKST = YES to use planck function for star, 'NO to use stellar atmosphere file
-kt04000g+4.0z-2.0.ascii = ATNAME = Stellar photosphere file
-2.09 = RSTAR = Stellar radius in Solar radii
-4.e3 = TSTAR = Blackbody temperature of central star (K)
-.5 = MASSC = Mass of central star (for TSC properties)
+            YES =      CLIMB = YES for limb darkening of central source, NO for not
+             NO =  CPLANCKST = YES to use planck function for star, 'NO to use stellar atmosphere file
+kt04000g+4.0z-2.0.ascii =     ATNAME = Stellar photosphere file
+         2.09 =      RSTAR = Stellar radius in Solar radii
+        4.e3 =      TSTAR = Blackbody temperature of central star (K)
+           .5 =      MASSC = Mass of central star (for TSC properties)
+             NO =      CSPOT = YES if spots on star, NO if not
+            45. =    SPOTLAT = latitude of spot (degrees)
+              1 =      NSPOT = number of spots (1 or 2)
 
 '**** Outside Illumination ****'
-NO = COUTILLUM = YES for outside illumination (ISRF), NO for none
-1. = ISRF_SCL = Scale factor for the ISRF
-0. = ISRF_AV = Extinction (Av) of the ISRF
+             NO =  COUTILLUM = YES for outside illumination (ISRF), NO for none
+             1. =   ISRF_SCL = Scale factor for the ISRF
+             0. =    ISRF_AV = Extinction (Av) of the ISRF
 
 '**** Overall Disk Properties ****'
-2.e-8 = MASSD = Disk mass in solar masses
-RSTAR = CRMIN = 'Units of Rmin:  Rstar, Rsub, or AU'
-RSTAR = CZMIN = 'RSTAR' to set ZMIN at RSTAR, 'RSUB' to scale ZMIN at Rsub, 'R100' to set ZMIN at 100AU
-0.2 = FMASSD1 = Fraction of mass in disk 1 (Large grains settled disk)
-SPH = CDISKCURV = define disk surfaces/density using spherical radius (SPH) or cylindrical (CYL)
-NO = CHSEQ = solve for vertical hydrostatic equilibrium (YES or NO). 
-1  = ITER_HSEQ = start HSEQ solution after this number of iterations (range 1-NIMAX) (default is 1)
-2  = DISK_HSEQ = apply HSEQ to big grain settled disk (1), small grain disk (2), or both (3)  (default is 2)
+           0.01 =      MASSD = Disk mass in solar masses
+          300.0 =      RMAXD = Disk outer radius in AU
+           RSUB =   CRMIN = 'Units of Rmin:  Rstar, Rsub, or AU'
+          1.0 =      RMIND = Minimum disk radius (unit set in CRMIN above)
+          RSTAR =      CZMIN = 'RSTAR' to set ZMIN at RSTAR, 'RSUB' to scale ZMIN at Rsub, 'R100' to set ZMIN at 100AU
+            0.2 =    FMASSD1 = Fraction of mass in disk 1 (Large grains settled disk)
+           NO = CHSEQ = solve for vertical hydrostatic equilibrium (YES or NO).
 
 '****  GAPs, SPIRALs, and/or WARPs in disk (3-D geometries:  set NPG=120 or some other 3-D value) ***'
-NO = CGAPD  = gap in disk (YES or NO)
-.3 = RGAPD1 = Inner disk gap radius (AU)
-46. = RGAPD2 = Outer disk gap radius (AU)
-NO = CSPIRAL = spiral warps in disk (YES or NO)
-30. = PITCH = pitch angle (30 is loose, 5 is tight)
-10 = SN  = summation parameter that determines width of the arms (2-10)
-0.5 = SW = fraction of mass entrained in the arms
-10.0 = RSPIRAL1 = radius in AU where spiral arms begin
-100.0 = RSPIRAL2 = radius in AU where spiral arms begin
-NO = CDISKWARP = inner disk warp (YES or NO)
-0.5 = WARPHEIGHT = Scale for disk warp (adds to scaleheight)
-11 = WEXP = Exponent for azimuthal disk warp (cos**wexp)
-5.0 = WARPLENGTH = radial scale-length for warp (AU,bigger is slower falloff)
-YES = CRIMCURVE = curved inner rim wall (YES or NO)
-0.003 = RIMCURVELENGTH = radial scale-length for wall curve (AU, bigger is slower falloff)
-1. = RIMCURVEHEIGHT = scale for rim wall curve (units of scale height)
-1. = RIMCURVEEXP = exponent for curvature of rim (modify in conjunction with rimcurvelength)
-NO = CRIMPUFF = puffed-up inner rim (YES or NO)
-0.5 = RIMHEIGHT = scale for inner rim puff (adds to scaleheight)
-0.02 = RIMLENGTH = radial scale-length for puff (AU, bigger is slower falloff)
-YES = CGAPCURVE = curved inner gap wall (YES or NO)
-1. = GAPCURVELENGTH = radial scale-length for wall curve (AU, bigger is slower falloff)
-0.5 = GAPCURVEHEIGHT = scale for gap wall curve (units of scale height)
-1. = GAPCURVEEXP = exponent for curvature of rim (modify in conjunction with gapcurvelength)
-NO = CGAPPUFF = puffed-up cavity wall at outer gap radius (YES or NO)
-0.25 = GAPHEIGHT = scale for gap puff (adds to scaleheight)
-1.0 = GAPLENGTH = radial scale-length for gap puff (AU, bigger is slower falloff)
-NO = CMISALIGN = misaligned inner disk (YES or NO)
-1. = RADMISALIGN = outer radius of misaligned inner portion of disk (AU)
-30. = INCMISALIGN = inclination of the misaligned disk (degrees)
+          YES  =   CGAPD  = gap in disk (YES or NO)
+          3.  =      RGAPD1 = Inner disk gap radius (AU)
+          5. =      RGAPD2 = Outer disk gap radius (AU)
+          NO  =   CSPIRAL = spiral warps in disk (YES or NO)
+           30.  = PITCH = pitch angle (30 is loose, 5 is tight)
+           10  = SEXP  = parameter that determines width of the arms (try 2-10)
+           0.5 = SW = fraction of mass entrained in the arms
+           NO =  CDISKWARP = inner disk warp (YES or NO)
+           1.0 =  WARPHEIGHT = Scale for disk warp (adds to scaleheight)
+           41 =   WEXP = Exponent for azimuthal disk warp (cos**wexp)
+           5.0  = WARPLENGTH = radial falloff factor for warp (AU,bigger is slower)
+           YES =  CRIMPUFF = puffed-up inner rim (YES or NO)
+           1.0 =  RIMHEIGHT = scale for puff (adds to scaleheight)
+           0.01 =  RIMLENGTH = radial falloff factor for puff (AU, bigger is slower)
+           YES =  CGAPPUFF = puffed-up cavity wall (YES or NO)
+           1.0 =  GAPHEIGHT = scale for puff (adds to scaleheight)
+           1.0 =  GAPLENGTH = radial falloff factor for puff (AU, bigger is slower)
 
 '*** Large grains settled disk *** '
-www003.par = DUSTNAME(1) = Dust file, thermal grains [disk 1]
+  www003.par = DUSTNAME(1) = Dust file, thermal grains [disk 1]
 draine_opac_new.dat = DUSTNAME(5) = Dust file, <200A grains [disk 1]
-0.0 = FSG(1) = Fraction of the mass in <200A grains [disk 1]
-0.005 = ZSCALE(1) = Scale height in RSTAR (if CZMIN='RSTAR'), HSEQ (if CZMIN='RSUB'), or AU (if CZMIN='R100') [disk 1]
-50.0 = RMIND(1) = Minimum disk radius (unit set in CRMIN above)
-300.0 = RMAXD(1) = Disk outer radius in AU
-2.25 = A(1) = Disk radial density exponent (~ r^(-a)) [disk 1]
-1.25 = B(1) = Disk scale height exponent (~ r^(b)) [disk 1]
-0.005 = ZSCALE_GAP(1) = Scale height of gap (use same units as ZSCALE)
-2.25 = A_GAP(1) = gap radial density exponent
-1.25 = B_GAP(1) = gap scale height exponent
-0.001 = RHOSCALE_GAP(1) = ratio of gap surface density just inside RGAPD2 to value just outside
+           0.0 =    FSG(1) = Fraction of the mass in <200A grains [disk 1]
+          0.005 =  ZSCALE(1) = Scale height in RSTAR (if CZMIN='RSTAR'), HSEQ (if CZMIN='RSUB'), and AU (if CZMIN='R100') [disk 1]
+           2.25 =       A(1) = Disk density exponent (~ r^(-a)) [disk 1]
+           1.25 =       B(1) = Disk scale height exponent (~ r^(b)) [disk 1]
+          0.005 =  ZSCALE_GAP(1) = Scale height of gap (use same units as ZSCALE)
+           2.25 =  A_GAP(1) = gap density exponent
+           1.25 =  B_GAP(1) = gap scale height exponent
+           0.0  = RHOSCALE_GAP(1) = ratio of gap density to disk density at RGAPD2
 
 '*** Small grains disk *** '
-kmh.par = DUSTNAME(2) = Dust file, thermal grains [disk 2]
+ kmh.par = DUSTNAME(2) = Dust file, thermal grains [disk 2]
 draine_opac_new.dat = DUSTNAME(6) = Dust file, <200A grains [disk 2]
-0.0 = FSG(2) = Fraction of the mass in <200A grains [disk 2]
-0.01 = ZSCALE(2) = Scale height in RSTAR (if CZMIN='RSTAR'), HSEQ (if CZMIN='RSUB'), or AU (if CZMIN='R100') [disk 2]
-50.0 = RMIND(2) = Minimum disk radius (unit set in CRMIN above)
-300.0 = RMAXD(2) = Disk outer radius in AU
-2.25 = A(2) = Disk density exponent (~ r^(-a)) [disk 2]
-1.25 = B(2) = Disk scale height exponent (~ r^(b)) [disk 2]
-0.01 = ZSCALE_GAP(2) = Scale height of gap (use same units as ZSCALE)
-2.25 = A_GAP(2) = gap density exponent
-1.25 = B_GAP(2) = gap scale height exponent
-0.001 = RHOSCALE_GAP(2) = ratio of gap surface density just inside RGAPD2 to value just outside
+           0.0 =    FSG(2) = Fraction of the mass in <200A grains [disk 2]
+          0.01 =  ZSCALE(2) = Scale height in RSTAR (if CZMIN='RSTAR'), HSEQ (if CZMIN='RSUB'), and AU (if CZMIN='R100') [disk 2]
+            2.25 =       A(2) = Disk density exponent (~ r^(-a)) [disk 2]
+            1.25 =       B(2) = Disk scale height exponent (~ r^(b)) [disk 2]
+          0.02 =  ZSCALE_GAP(2) = Scale height of gap (use same units as ZSCALE)
+           2.27 =  A_GAP(2) = gap density exponent
+           1.25 =  B_GAP(2) = gap scale height exponent
+           0.01  = RHOSCALE_GAP(2) = ratio of gap density to disk density at RGAPD2
 
 '*** Radial Exponential cutoff to disk *** '
-NO = CRADEXP = add radial exponential cutoff to disk density (YES or NO)?
-50 = RADEXP = scale for exponential cutoff in AU
+   YES  =  CRADEXP = add radial exponential cutoff to disk density (YES or NO)?
+   50  =  RADEXP = scale for exponential cutoff in AU
 
-'**** Disk/star accretion properties ****'
-NO = CDISKACC = YES to include disk accretion luminosity, NO to not
-NO = CALPHA = YES to read alpha disk parameter, NO to read disk Mdot
-0 = ALPHA/MDOT = Disk alpha parameter (if CALPHA=YES) or accretion rate (if CALPHA=NO)
-5.0 = RTRUNC = Magnetosphere co-rotation radius in RSTAR
-NO = CSPOT = YES if spots on star, NO if not
-45. = SPOTLAT = latitude of spot (degrees)
-1 = NSPOT = number of spots (1 or 2)
-NO = CTEMP = YES to read spot temperature, NO to read Fractional spot size (computes one from the other)
-0.01 = TSPOT/FSPOT = Temperature of spot (CTEMP=YES) or Fractional area of hot spot (CTEMP=NO)
+'**** Disk accretion properties ****'
+            YES =   CDISKACC = YES to include disk accretion luminosity, NO to not
+            NO =     CALPHA = YES to read alpha disk parameter, NO to read disk Mdot
+         4.6e-9  =      ALPHA = Disk alpha parameter (if CALPHA=YES) or accretion rate (if CALPHA=NO)
+            5.0 =     RTRUNC = Magnetosphere co-rotation radius in RSTAR
+           0.01 =      FSPOT = Fractional area of hot spot
 
 '**** Envelope Properties ****'
 r400_ice095.par = DUSTNAME(3) = Dust file, thermal grains [envelope]
 draine_opac_new.dat = DUSTNAME(7) = Dust file, <200A grains [envelope]
-0.0 = FSG(3) = Fraction of the mass in <200A grains [envelope]
-500. = RMAX = Maximum envelope radius in AU
-50.0 = RMINE = Minimum envelope radius (unit set in CRMIN above)
-ULRICH = ENVTYPE  = ULRICH (rotational infall) or POWLAW
-0.e-8 = RATE = Mass infall rate for ULRICH envelope (solar masses/year)
-300.0 = RC = Centrifugal radius for ULRICH envelope (AU)
-1.e-14 = RHODENS1 = (fiducial) density at 1 AU, if ENVTYPE=POWLAW
-1.5 = ENVEXP  = exponent of power law density, if ENVTYPE=POWLAW
-3.34e-21 = RHOAMB = Ambient density,floor for envelope density
+          0.0 =    FSG(3) = Fraction of the mass in <200A grains [envelope]
+          500. =       RMAX = Maximum envelope radius in AU
+           1.0 =      RMINE = Minimum envelope radius (unit set in CRMIN above)
+        ULRICH  =   ENVTYPE  = ULRICH (rotational infall) or POWLAW
+      0.e-8 =       RATE = Mass infall rate for ULRICH envelope (solar masses/year)
+          300.0 =         RC = Centrifugal radius for ULRICH envelope (AU)
+        1.e-14     = RHODENS1 = (fiducial) density at 1 AU, if ENVTYPE=POWLAW
+           1.5    =  ENVEXP  = exponent of power law density, if ENVTYPE=POWLAW
+          1.67e-20 =     RHOAMB = Ambient density,floor for envelope density
 '****  option for Fractal density variations ****'
-NO = CFRACTAL  =  YES to include fractal variations in density, NO to not
-0.9 = DENSRATIO = ratio of clumped density to smooth
-0,0,0,1 = FRACTMASK = apply to disk1,disk2,envelope,outflow (0=no, 1=yes)
--3144 = IFSEED  = fractal density random seed  (negative integer)
+          NO    =   CFRACTAL  =  YES to include fractal variations in density, NO to not
+          0.9   =  DENSRATIO = ratio of clumped density to smooth
+   0,0,0,1 = FRACTMASK = apply to disk1,disk2,envelope,outflow (0=no, 1=yes)
+         -3144  =  IFSEED  = fractal density random seed  (negative integer)
 '*****  GAP in envelope *****'
-NO = CGAPE  = gap in envelope (YES or NO)
-0.3 = RGAPE1 = Inner envelope gap radius (AU)
-46.0 = RGAPE2 = Outer envelope gap radius (AU)
-SCALE = CGAPEDENS = scale density in gap (SCALE) or constant density (CONST)
-0.001 = FRACTE = gap density ratio (if CGAPEDENS=SCALE) 
-1.e-15 = RHOGAPE = gap density if CGAPEDENS=CONST
+          YES  =   CGAPE  = gap in envelope (YES or NO)
+          3.0  =      RGAPE1 = Inner envelope gap radius (AU)
+          5.0 =      RGAPE2 = Outer envelope gap radius (AU)
+         SCALE  = CGAPEDENS = scale density in gap (SCALE) or constant density (CONST)
+          0.001  =      FRACTE = gap density ratio (if CGAPEDENS=SCALE) 
+         1.e-15  =  RHOGAPE = gap density if CGAPEDENS=CONST
 '**** Bipolar Cavity Properties ****'
-kmh.par = DUSTNAME(4) = Dust file, thermal grains [cavity]
+ kmh.par = DUSTNAME(4) = Dust file, thermal grains [cavity]
 draine_opac_new.dat = DUSTNAME(8) = Dust file, <200A grains [cavity]
-0.0 = FSG(4) = Fraction of the mass in <200A grains [cavity]
-YES = CHOLE = YES for cavity carved out, o/w NO cavity
-POLYN = CSHAPE = POLYN if polynomial-shaped cavity, STREAM if streamline (requires ENVTYPE=ULRICH)
-300.0 = RCHOLE = Streamline RC size in AU (if CSHAPE=STREAM, ENVTYPE=ULRICH)
-90.000 = THET1 = Opening angle of inner cavity surface
-1.5 = EX1 = Cavity shape exponent inner surface, ~ w^ex1
-0.0 = Z01 = z-intercept (AU) inner cavity surface at w=0 (can offset either way)
-90.000 = THET2 = Opening angle of outer cavity surface (if CSHAPE=POLYN, otherwise uses streamline)
-1.5 = EX2 = outer Cavity surface exponent (if CSHAPE=POLYN), ~ w^ex2
-0.0 = Z02 = z-intercept (AU) outer cavity surface at w=0 (can offset either way)
-0.0 = EXF = Exponent for cavity density power-law: rho=rhoconst1*r^(-exf)
-3.34e-21 = RHOCONST1 = Coefficient for inner cavity density distribution
-3.34e-21 = RHOCONST2 = Coefficient for outer cavity density distribution
+           0.0 =    FSG(4) = Fraction of the mass in <200A grains [cavity]
+            YES =      CHOLE = YES for cavity carved out, o/w NO cavity
+          POLYN =     CSHAPE = 'POLYN' if polynomial-shaped cavity, 'STREAM' if streamline (requires ENVTYPE=ULRICH)
+          300.0 =     RCHOLE = Streamline hole size in AU (if CSHAPE=YES)  (if ENVTYPE=ULRICH)
+          90.000 =      THET1 = Opening angle of cavity wall
+            1.5 =        EX1 = Cavity shape exponent (if CSHAPE='POLYN'), ~ w^ex1
+            0.0 =        Z01 = z-intercept (AU) inner cavity at w=0 (can offset either way)
+          90.000 =      THET2 = Opening angle of outer cavity wall
+            1.5 =        EX2 = outer Cavity shape exponent (if CSHAPE='POLYN'), ~ w^ex1
+            0.0 =        Z02 = z-intercept (AU) outer cavity at w=0 (can offset either way)
+            0.0 =        EXF = Exponent for cavity density power-law: rho=rhoconst1*r^(-exf)
+      1.67e-20 =  RHOCONST1 = Coefficient for inner cavity density distribution
+      1.67e-20 =  RHOCONST2 = Coefficient for outer cavity density distribution
 
 '**** SG properties ****'
-1.0 = RMIN_SG = minimum radius of <200A grains (units of CRMIN)
+           1.0 =   RMIN_SG = minimum radius of <200A grains (units of CRMIN)
 
 '**** Output Data ****'
-YES = IMFILT = Output images convolved with filters
-NO = IMCUBE = Output multi-wavelength data cubes (takes lots of disk space!)
-149 = NXIMG = number of pixels in one dimension of square image 
-1 = NPEEL = Number of peel-off angles for SEDs and Images
-1 = NAP = Number of apertures for SEDs
-200. = RMAXI = Image half-size in AU
-1325. = APMIN = Radius of smallest aperture in AU
-1325. = APMAX = Radius of largest aperture in AU
-80.0 = THETE = For CPEEL=YES, theta angle(s) (deg) of high S/N image(s)/SED(s)
-0.0 = PHIE = For CPEEL=YES, phi angle(s) (deg) of high S/N image(s)/SED(s)
-20 = NMU = Number of theta image/SED bins
-1 = NPH = Number of phi image/SED bins
-150 = NFREQ = Number of frequencies for images/SEDs
+            YES =     IMFILT = Output images convolved with filters
+            YES =     IMCUBE = Output multi-wavelength data cubes
+             NO =   IMSPARSE = Output multi-wavelength sparse matrice
+              1 =      NPEEL = Number of peel-off angles for SEDs and Images
+              1 =        NAP = Number of apertures for SEDs
+          400. =      RMAXI = Image half-size in AU
+          1325. =      APMIN = Radius of smallest aperture in AU
+          1325. =      APMAX = Radius of largest aperture in AU
+          80.1 =      THETE = For CPEEL=YES, theta angle(s) (deg) of high S/N image(s)/SED(s)
+           0.0 =       PHIE = For CPEEL=YES, phi angle(s) (deg) of high S/N image(s)/SED(s)
+            20 =        NMU = Number of theta image/SED bins
+             1 =        NPH = Number of phi image/SED bins
+           150 =      NFREQ = Number of frequencies for images/SEDs
 
 '*** Advanced ***'
-YES = DIFFUSION  = Whether to use the diffusion
+             NO = PARTIALPEEL = Do partial peeling-off (only accretion and scattered photons)
+              3 =    SPARSEF = Sparse image factor
+             96 =    SPARSED = Sparse image size
+            10. = SPARSERMIN = Sparse image inner image size
+          1200. = SPARSERMAX = Sparse image outer image size
+            YES = DIFFUSION  = Whether to use the diffusion
+
 
 '*** Grid parameters ***'
-400 = NRG = Number of radial cells
-197 = NTG = Number of theta cells (use an odd number) (set to 3 for 1-D models).
-2 = NPG = Number of phi cells (set to 2 for 1-D or 2-D models).
+            400 =        NRG = Number of radial cells
+            199 =        NTG = Number of theta cells (use an odd number)
+              2 =        NPG = Number of phi cells

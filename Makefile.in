@@ -1,0 +1,125 @@
+FC = @FC@ @extra_serial@
+CFITSIO = @CFITSIO_libdir@
+LDFLAGS = $(CFITSIO)
+
+.SUFFIXES:
+.SUFFIXES: .o .f .f90 .F90
+
+OBJSE	= 	@fits@ \
+		math_binning.o \
+		type_yale_sparse_matrix.o type_smart_image.o @nested_image@ \
+		lib_array.o constants.o \
+		extract_nested_image.o
+
+OBJSL	= 	@fits@ \
+		math_binning.o \
+		type_yale_sparse_matrix.o type_smart_image.o @nested_image@ \
+		nested_image_slice.o
+
+OBJSB	=	constants.o \
+		messages.o \
+		lib_array.o \
+		atmos_interp_mod.o \
+		@fits@ \
+		closest_wall.o \
+                ecuyer_cote_mod.o \
+                random_standard_uniform_mod.o \
+                user_set_generator.o \
+		math_binning.o type_yale_sparse_matrix.o \
+		type_smart_image.o @nested_image@ \
+		grid_mod.o tts_mod.o dust_mod.o stokesvar_mod.o filt_mod.o \
+		taunum_mod.o out_mod.o opacin_mod.o log_mod.o tab_mod.o \
+		random.o tabl_mod.o spot_mod.o isrf_mod.o draine_mod.o \
+                wrimsg_mod.o \
+                ttsre_mpi_mod.o \
+		peeloff_3d.o \
+		tauint_3d.o \
+		@output@ \
+		check.o \
+		configuration.o \
+		densdiskg.o \
+		densenv.o \
+		densenvpw.o \
+		draine_cdf.o \
+		emit_sg.o \
+		emit_gasacc.o \
+		flux.o \
+		dust.o \
+		dustmat.o \
+		dusttemp.o \
+		emit_common.o \
+		envset.o \
+		errmsg.o \
+		fractal_sph.o \
+		filt_nu.o \
+		findangle3.o \
+		gridset.o \
+                gridsethydro.o \
+                hseq.o \
+		initarr.o \
+		initp_common.o \
+		initp.o \
+		initp_ps.o \
+		initpspot.o \
+		initpacc.o \
+		initpabs.o \
+		initpout.o \
+		int_mean.o \
+		isrf_cdf.o \
+		isotrp.o \
+		locate3.o \
+		lucydustfreq.o \
+		mathsubs.o \
+		newdisktherm.o \
+		newtts.o \
+		nr.o \
+		phiface.o \
+		plancknu.o \
+		propagate.o \
+		radface.o \
+		reapar.o \
+		reemit.o \
+		rep_isrf.o \
+		rep_draine.o \
+		samptabl.o \
+		select_dust.o \
+		setup.o \
+		setup_wave.o \
+                spotset.o \
+		splines.o \
+		starbarb.o \
+		stokes.o \
+		stokespeel.o \
+		subs_g77.o \
+                Rdist.o \
+		testgrid.o \
+		tfinal.o \
+		thetaface.o \
+		wrimsg.o \
+		zerod.o 
+
+ttsre:		$(OBJSB)
+		$(FC) $(OBJSB) $(LDFLAGS) -o @ttsre@
+		echo @ttsre_message@
+
+
+nested_image_slice:	$(OBJSL)
+			$(FC) $(OBJSL) $(LDFLAGS) -o nested_image_slice
+
+extract_nested_image:	$(OBJSE)
+			$(FC) $(OBJSE) $(LDFLAGS) -o extract_nested_image
+
+
+.f90.o:
+		$(FC) -c $<
+
+.F90.o:
+		$(FC) -c $<
+
+.f.o:
+		$(FC) -c $<
+
+tarfile:;	tar cvf ttsre.tar *.f90 *.F90 mctherm.par Make* 
+
+clean:;		/bin/rm -f *.o */*.o */*.mod *genmod.f90 *.mod
+

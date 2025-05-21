@@ -1,0 +1,88 @@
+NP	        Number of photons from central star
+NPMIN	        Minimum number of photons for Lucy temperature calculation
+NIMIN	        Minimum number of iterations for Lucy temperature calculation
+CPEEL	        YES for peeling, NO for standard MC
+CLUCY	        YES to use Lucy method for T-corr, NO for Bjorkman & Wood
+I1	        Random number seed
+CWARN	        YES to print warnings & errors, NO to not.
+IWRITE	        output timing information every IWRITE photons
+PARDIR	        directory containing atmosphere, dust, and filter files
+COUTILLUM       YES for outside illumination (ISRF), NO for none
+ISRF_SCL        Scale factor for the ISRF
+ISRF_AV	        Extinction (Av) of the ISRF
+CLIMB	        YES for limb darkening of central source, NO for not
+CPLANCKST       YES to use planck function for star, 'NO to use stellar atmosphere file
+ATNAME	        Stellar photosphere file
+RSTAR	        Stellar radius in Solar radii
+TSTAR	        Blackbody temperature of central star (K)
+MASSC	        Mass of central star (for TSC properties)
+CSPOT	        YES if spots on star, NO if not
+SPOTLAT	        latitude of spot (degrees)
+NSPOT	        number of spots (1 or 2)
+MASSD	        Disk mass in solar masses
+RMAXD	        Disk outer radius in AU
+CRMINSUB        YES to scale RMIND,RMINE to Rsub, NO to scale to Rstar
+RMIND	        Minimum disk radius in Rstar (or Rsub if CRMINSUB=YES)
+CZMIN	        'RSTAR' to set ZMIN at RSTAR, 'RSUB' to scale ZMIN at Rsub, 'R100' to set ZMIN at 100AU
+FMASSD1	        Fraction of mass in disk 1 (Large grains settled disk)
+ZSCALE(1)       Scale height in RSTAR (if CZMIN='RSTAR'), HSEQ (if CZMIN='RSUB'), and AU (if CZMIN='R100') [disk 1]
+ZSCALE(2)       Scale height in RSTAR (if CZMIN='RSTAR'), HSEQ (if CZMIN='RSUB'), and AU (if CZMIN='R100') [disk 2]
+A(1)	        Disk density exponent (~ r^(-a)) [disk 1]
+A(2)	        Disk density exponent (~ r^(-a)) [disk 2]
+B(1)	        Disk scale height exponent (~ r^(b)) [disk 1]
+B(2)	        Disk scale height exponent (~ r^(b)) [disk 2]
+CDISKACC        YES to include disk accretion luminosity, NO to not
+CALPHA	        YES to read alpha disk parameter, NO to read disk Mdot
+ALPHA           Disk alpha parameter (if CALPHA=YES) or accretion rate (if CALPHA=NO)
+RTRUNC	        Magnetosphere co-rotation radius in RSTAR
+FSPOT	        Fractional area of hot spot
+CDISKWARP       YES to include disk warp, NO to not
+WSC	        Scale for disk warp (1 = double scaleheight)
+WEXP	        Exponent for disk warp (cos**wexp)
+RMAX	        Maximum envelope radius in AU
+RMINE	        Minimum envelope radius in Rstar (or Rsub if CRMINSUB=YES)
+RMINE2	        Inner radius where density is full scale in Rstar (or Rsub if CRMINSUB=YES)
+FRACTE	        fractional envelope density inside RMINE2
+RATE	        Mass infall rate for TSC envelope (solar masses/year)
+RC	        Centrifugal radius for TSC envelope (AU)
+CHOLE	        YES for cavity carved out, o/w NO cavity
+CSHAPE          'POLYN' if polynomial-shaped cavity, 'STREAM' if streamline
+RCHOLE          Streamline hole size in AU (if CSHAPE=YES)
+EX1             Cavity shape exponent (if CSHAPE='POLYN'), ~ w^ex1
+THET1           Opening angle of cavity wall
+Z01	        Height of wall at w=0 (can offset either way)
+EXF	        Exponent for cavity density power-law: rho=rhoconst*r^(-exf)
+RHOCONST1       Coefficient for cavity density distribution
+RHOAMB          Ambient density
+IMFILT	        Output images convolved with filters
+IMCUBE	        Output multi-wavelength data cubes
+IMSPARSE        Output multi-wavelength sparse matrice
+NPEEL	        Number of peel-off angles for SEDs and Images
+NAP	        Number of apertures for SEDs
+RMAXI	        Image half-size in AU
+APMIN	        Radius of smallest aperture in AU
+APMAX	        Radius of largest aperture in AU
+THETE	        For CPEEL=YES, theta angle(s) (deg) of high S/N image(s)/SED(s)
+PHIE	        For CPEEL=YES, phi angle(s) (deg) of high S/N image(s)/SED(s)
+PARTIALPEEL     Do partial peeling-off (only accretion and scattered photons)
+SPARSEF	        Sparse image factor
+SPARSED	        Sparse image size
+SPARSERMIN      Sparse image inner image size
+SPARSERMAX      Sparse image outer image size
+NRG	        Number of radial cells
+NTG	        Number of theta cells
+NPG	        Number of phi cells
+FSG(1)	        Fraction of the mass in <200A grains [disk 1]
+FSG(2)	        Fraction of the mass in <200A grains [disk 2]
+FSG(3)	        Fraction of the mass in <200A grains [envelope]
+FSG(4)	        Fraction of the mass in <200A grains [cavity]
+DUSTNAME(1)     Dust file, thermal grains [disk 1]
+DUSTNAME(2)     Dust file, thermal grains [disk 2]
+DUSTNAME(3)     Dust file, thermal grains [envelope]
+DUSTNAME(4)     Dust file, thermal grains [cavity]
+DUSTNAME(5)     Dust file, <200A grains [disk 1]
+DUSTNAME(6)     Dust file, <200A grains [disk 2]
+DUSTNAME(7)     Dust file, <200A grains [envelope]
+DUSTNAME(8)     Dust file, <200A grains [cavity]
+RMIN_SG        minimum radius of <200A grains
+THETMU0		Opening angle of streamline wall (deg)
