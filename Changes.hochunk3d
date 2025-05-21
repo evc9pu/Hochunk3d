@@ -1,0 +1,16 @@
+January 31, 2014
+
+1. allow spiral pattern to have an inner and outer radius
+2. code can now read in a density array (e.g., from a hydro simulation, reformatted for 
+polar-spherical grid).See instructions file
+3. the 2 disks can have different inner and outer radii.
+
+August 2, 2013
+
+in grouping outgoing photons into their origin of emission (stellar, disk, envelope), I forgot
+to include the PAH emission from the disk.  It was being lumped in with envelope.  This doesn't affect
+anything but the plots showing origin of emission (plotsedo in the IDL directory).
+
+July 2013
+
+release version

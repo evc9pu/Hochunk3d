@@ -1,0 +1,1275 @@
+Latest release:  Aug. 2011
+
+Table of Contents
+
+I. Distribution
+II. Input
+III. Output
+IV. IDL programs
+V.  Units and formats
+VI. Modifying the code
+VII. Tips
+VIII. Sample models
+IX.  how to contact me
+X. Acknowledgments.
+
+I.  Distribution
+
+1. These codes were developed by Barbara Whitney, Tom Robitaille, Jon Bjorkman,
+Kenny Wood, and Mike Wolff.  The code is described in (Whitney et al.
+2003a ApJ 598:1079; Paper I), Whitney et al. (2003b ApJ 591:1049; Paper II) and 
+Whitney et al. (2013, ApJS, 207,30; Paper III).
+
+2.  The code has been tested on linux and MacOS using Fortran compilers 
+ifort and gfortran.  gfortran is a free compiler.  It is available for macs 
+at www.macresearch.org.
+The code has been converted to f95, so f77 and g77 compilers won't work.  
+If you have a mac, be sure to install Xcode before installing gfortran.  
+That comes with your operating system 
+disks and is also available at the apple store for something like $4.95.
+The plotting programs use IDL (sorry, lots of legacy code). 
+
+3. After downloading the program (hochunk3d.tgz), untar the file
+into your codes directory:
+
+	tar -xzf hochunk3d.tgz
+
+This will create a hochunk3d directory with the following subdirectories
+
+     src, containing the source code.
+     models, a directory with the 27 model input files from Paper III
+	     and several parameter files.
+     idl, directory with plotting programs for looking at results.
+
+In the top directory is this file (instructions.txt), and Changes.HOCHUNK3D
+that lists the changes for each release of the program.
+
+The subdirectories are as follows:
+
+a. The source code is in src directory.  
+
+i. NOTE:  the compiling instructions are different from the 2008 version of the code, so please
+read this section!
+
+To do a simple compilation (not recommended, see section ii for fitsio options),
+type the following:
+
+make clean (will give errors for a new installation, ignore).
+./configure
+make
+
+By default it will look for ifort first, then gfortran.  If you prefer
+to use a specific compiler, type, e.g.,:
+
+make clean
+./configure FC=gfortran
+make
+
+If you have another f95 compiler besides gfortran or ifort, go ahead and try
+it out.  Since the code works for gfortran, it probably works for most
+compilers.  If you have trouble with gfortran, you may have an old version.
+Try installing a recent version--the install packages are very easy to use
+now.
+
+ii.   If you want to use fits I/O, which is highly recommended, you need to locate or download 
+(http://heasarc.gsfc.nasa.gov/fitsio/) and install the fitsio library (libcfitsio.a). 
+This produces much smaller output files (fits format) that can be read on any machine.
+
+Then you can configure with this option:
+
+./configure --enable-fits --with-cfitsio=[path to your libcfitsio.a file]
+
+(substitute the path to the libcfitsio.a file in [path to your library])
+
+I put the libcfitsio.a in the same directory as the source code (the src directory).
+Then I use the following script to configure:
+
+./configure --enable-fits --with-cfitsio=.
+
+If you need to specify your fortran compiler, add that as an option too.
+
+./configure FC=gfortran --enable-fits --with-cfitsio=.
+
+Note:  we've noticed problems with older versions of gfortran
+linking to cfitsio.  If using a mac: the Lion operation system, the latest
+installation of Xcode, and the latest version of gfortran (http://hpc.sourceforge.net/
+get this binary:  gfortran-lion.tar.gz )
+work smoothly.
+
+If you are using an older version of cfitsio, this might work:
+
+./configure --enable-legacy-cfitsio [and any other options from above]
+
+iii.  Parallel version of code.  This only works with the cfitsio option.  
+The code has been developed using the MPICH version of MPI and the installation 
+guide/hints assume that distribution.  However, any MPI distribution (i.e., OpenMPI should work).
+
+You may need to install MPICH2. Download the latest stable version at:
+
+http://www.mcs.anl.gov/research/projects/mpich2/downloads/index.php?s=downloads
+
+(unless you know otherwise, download the non-hydra source code).
+
+Move the downloaded file to a work area and unpack the code (it will create a directory into which 
+the code will be placed), i.e., 
+
+tar -zxvf mpich2-1.4.1p1.tar.gz
+
+Change directory into the new directory and run the configure scripts AFTER you have decided where 
+you want the resulting libraries, binaries, and headers to be installed.  The default root is /usr/local, 
+so the executables will go to /usr/local/bin.  However, we recommend that you use a separate directory and 
+then add that to your path later in order to make upgrading easier.  We recommend something like /usr/local/mpich 
+
+compile mpich:
+
+./configure --prefix=/usr/local/mpich  --enable-fortran
+make
+sudo make install
+
+(this will put the various pieces in the location specified by "--prefix" or /usr/local if prefix is 
+not specified. With the above option, the executables go to /usr/local/mpich/bin, the libraries to 
+/usr/local/mpich/lib, etc.
+
+If you open a new process and "which mpif90" returns nothing or "command not found" (or something like that), 
+you need to add the install directory for the executables to your path.  For mac users with
+a standard setup (I think it's the bash shell), you would edit your .profile file in your 
+home directory as follows:
+
+export PATH=/usr/local/mpich/bin:$PATH
+
+If you use other shells, like (t)csh, you edit the .cshrc or .tcshrc as follows:
+
+set path = ( /usr/local/mpich/bin $path )
+
+**Now you can compile the hochunk3d code.
+
+in the src directory:
+
+./configure --enable-fits --with-cfitsio=[path to your library] --enable-mpich
+./configure --enable-fits --with-cfitsio=. --enable-mpich
+make  clean
+make
+
+CAUTION to mac users!!!!  the macOS often renames *.F90 files to *.f90.  this is a real pain.
+The following programs need to be *.F90
+newdisktherm.F90
+newtts.F90
+output.F90
+output_FITS.F90
+
+if you run into problems, check this and rename as necessary.  then make clean, reconfigure, and make again.
+
+The parallel version of the code  makes a an executable called p_ttsre (which can be run with one processor, i.e.,
+serially).
+
+to run on a single multi-processor machine:
+mpiexec -np 6 ../../src/p_ttsre  
+
+In this example the number of processors (np) is 6, and the code is run from the models directory.  
+If run from elsewhere, use the appropriate path to the code executable
+
+For different machines (single or multi processor):
+mpiexec -np 16 -f machinefile [path]/p_ttsre
+
+machinefile might look something like
+
+heater1:4
+heater2:4
+heater3:4
+heater4:4
+
+which lists the names of the computers in the left column, and the number after the colon indicates how many 
+processes should be run on that machine.  also, each machine must have the code in the same directory
+path.
+
+b.  The 'models' directory contains subdirectories from which you run the 
+program.  There is a parfiles directory in here that contains several 
+parameter files used by the code (dust files, stellar atmosphere files, etc).  
+The sample run directories are modc0, modc0-I, etc.  There is only one input 
+file in these directories, mctherm.par.  
+
+In the models directory are a few scripts for running the program in the background,
+e.g., doit.csh, and doit_par.csh.
+There is also a cleanup.csh script.  If you don't use fitsio (described below),
+the unformatted files can take a lot of disk space, so this will clean them up.
+Ignore or make your own if you use fitsio.
+
+If you just want to do a quick run of the code, cd into modcII_quick,
+and then type either:
+
+	../../src/ttsre
+or
+	../../src/p_ttsre  for the parallel version
+or 
+        mpiexec -np 6 ../../src/p_ttsre   for the parallel version run on 6 nodes of a single machine
+
+This will produce SEDs at a range of viewing angle, as well as images.  if you want it go go even
+faster, set CPEEL=NO and you just get SEDs out but it will go fast.
+
+You can run a script called doit.csh which has the advantage of
+typing useful screen output to a logfile.  type:
+
+      ../doit.csh &
+or
+      ../doit_par.csh &   for the parallel version run on 6 nodes of a single machine (edit as desired).
+
+If you run the script, to check on progress of the code, look at the log
+file.  You can also do a "top" command to make sure it's running.
+
+There are several diagnostic warning messages.  You don't have to worry
+about warnings and there is an option to turn them off.
+But error messages are more problematic, especially if you
+get a bunch of them---let me know about those.
+If you run really small, high mass disks, and you get a lot of error messages,
+you probably need a finer grid.  The grid parameters are defined in the input file
+mctherm.par, as discussed in Section II.
+
+c.  idl directory contains sample plotting files for viewing the output 
+(Section III).
+
+II.  Input
+
+here is a description of the parameters in mctherm.par
+
+'**** Preliminaries ****'
+
+NP, number of photons for last iteration.  vary this for desired signal-to-noise of SEDs
+and images.  a million is okay for quicklook SEDs; 10 million is good for cleaner spectra, 
+and 40 mil is is good for nice images.  (note:  this does not depend on whether the grid
+is 1-D, 2-D or 3-D.  It affects the signal-to-noise of the SEDs and images).  
+
+NPMIN = Number of photons for each iteration until the last one.  This is the minimum
+required to calculate temperature in the Lucy method.  
+depends on the number of grid cells.  The codes calculates it's own NPMIN equal to 
+3*Ngrid (= 3*NRG*NPG*NTG), 
+but your value will over-ride if higher.  If CHSEQ=yes (see below), a clean temperature 
+is needed so this should be set fairly high, (for example, 1 million for the 
+default grid size).  If CHSEQ = NO, 100,000 is reasonable and 1 million is definitely sufficient
+for a 2-D run.  For 3-D runs, use more.
+Experiment to see if it makes any difference, and if not, use the lower number.
+
+NIMIN = Minimum number of iterations for Lucy temperature and/or HSEQ.
+The code decides on it's own if it converges, but your value will override if it's
+bigger.  
+
+NIMAX = Maximum number of iterations for Lucy temperature calculation.
+For quick runs, you can use a smaller number of iterations (2); for more
+accurate temperature calculation, use more iterations (5-6).  For HSEQ
+runs, even more may be needed, 8-10.
+
+CPEEL = YES if you want a high signal-to-noise spectrum and images for
+particular viewing angles.  = NO if you just want to look at spectra
+at several inclinations.  **NOTE**: The code runs slower with the 
+'YES' option.  If you just want quicklook SEDs at NMU (below) inclinations, run with
+CPEEL=NO and it will go faster.  
+
+CLUCY = YES to use Lucy method for T-corr, NO for Bjorkman & Wood.  Default is YES, especially if
+running 3-D codes or calculating PAH emission.  In 2-D, it doesn't make much difference.  In 1-D,
+Bjorkman & Wood is much faster.
+
+I1 = random number seed.  use a *negative* integer.  
+
+IWRITE = how often you want a message saying how many photons have been
+completed
+
+CWARN = YES to print out warning messages (usually meaningless to everyone but me), NO
+to not.  
+
+PARDIR = parent directory for atmosphere, dust, and filter files.  Default
+is '../parfiles'.
+
+DENSINPUT = YES for reading in density grid, NO for calculating analytic. here is sample IDL code
+to produce the proper format:
+openw,1,'densarr.unf',/f77_unformatted
+writeu,1,nrg,ntg,npg,ndg
+writeu,1,rarr
+writeu,1,thetarr
+writeu,1,phiarr
+writeu,1,densarr
+close,1
+
+where the arrays are declared as follows:
+densarr=dblarr(nrg,ntg,npg,ndg)
+rarr=dblarr(nrg)
+thetarr=dblarr(ntg)
+phiarr=dlbarr(npg)
+
+Usually you will have to interpolate your density grid onto a spherical polar grid.
+We can share our IDL routines to compute the grids etc, if you send me an email.
+
+'**** Central Source Properties ****'
+
+CLIMB = YES for limb darkening of central star, NO for isotropic 
+emission.  It probably makes no difference in a T Tauri system.
+
+CPLANCKST = YES to use a planck function for stellar spectrum, NO to
+use an atmosphere file (next).
+
+ATNAME = file for atmosphere spectrum of central stellar source
+(place this in the PARDIR).  
+Some sample files are provided.  A model atmosphere grid
+browser is available on our protostars website 
+(http://caravan.astro.wisc.edu/protostars) where you can 
+download an atmosphere file for a specified Tstar, metallicity, and log-g.
+
+RSTAR = Stellar radius in Solar radii
+
+TSTAR = Blackbody temperature of central star (K)
+
+MASSC = Mass of central star (used in the Ulrich envelope rotational infall solution,
+see Paper I, eqn. 1, which has a mistake: G Mstar/Rc^3 should be G Mstar Rc^3).
+
+
+'**** Outside Illumination ****'
+
+COUTILLUM = YES or NO for an additional luminosity source from the outside.  We use the InterStellar 
+Radiation Field (ISRF) as the input spectrum.
+
+ISRF_SCL = Scale factor for ISRF, 1 = Galactic average
+
+ISRF_AV = Extinction (Av) of the ISRF
+
+'**** Overall Disk Properties ****'
+
+MASSD = Disk mass in solar masses
+
+CRMIN = Units of disk and envelope inner radii, RMIND and RMINE.  
+Choose from these: RSTAR, RSUB, or AU.  Rsub is
+dust destruction radius (based on an empirical fit: rmind/rstar=(tsub/tstar)^(-2.1)).
+
+CZMIN = units of disk scale height ZMIN.  e.g., 0.01 Rstar at R=Rstar (CRMIN=RSTAR), or 1 at R=Rsub 
+(CRMIN=RSUB) or 10 AU at R=100 AU (CRMIN=AU).
+
+FMASSD1 = Fraction of disk mass in disk 1 (there are 2 disks)
+
+CDISKCURV = define disk surfaces/density using spherical radius (SPH) or cylindrical (CYL).  default is
+SPH, which works better for HSEQ solution.  By setting a rim curve, below, you can override this and get
+a nice curved surface.
+
+CHSEQ = solve for vertical hydrostatic equilibrium (YES or NO).
+
+ITER_HSEQ = start HSEQ solution after this number of iterations (range 1-NIMAX) (default is 1)
+
+DISK_HSEQ = apply HSEQ to big grain settled disk (1), small grain disk (2), or both (3)  (default is 2)
+
+'****  GAPs, SPIRALs, and/or WARPs in disk (3-D geometries:  set NPG=120 or some other 3-D value) ***'
+
+CGAPD  = YES or NO for gap in disk
+
+RGAPD1 = Inner gap radius in AU (in disk)
+
+RGAPD2 = Outer gap radius in AU (in disk)
+
+CSPIRAL = YES or NO for spiral arms in disk
+
+PITCH = pitch angle of spiral arms (30 is loose, 5 is tight)
+
+SN  = summation parameter that determines width of the arms (2-10)
+
+SW = fraction of mass entrained in the arms
+
+RSPIRAL1 = radius in AU where spiral arms begin
+
+RSPIRAL2 = radius in AU where spiral arms end
+
+CDISKWARP = YES or NO for inner disk warp
+
+WARPHEIGHT = Scale for disk warp (adds to scaleheight).  Example:  1 gives a scaleheight twice 
+the normal at the warp.  0.5 give a scaleheight of (1+0.5) = 1.5 * the normal scaleheight.
+
+WEXP = Exponent for azimuthal disk warp (cos**wexp)
+
+WARPLENGTH = radial scale length for warp (AU,bigger is slower)
+
+CRIMCURVE = curved inner rim wall (YES or NO)
+
+RIMCURVELENGTH = radial scale-length for wall curve (AU, bigger is slower falloff)
+
+RIMCURVEHEIGHT = scale for rim wall curve (units of scale height)
+
+RIMCURVEEXP = exponent for curvature of rim (modify in conjunction with rimcurvelength)
+
+CRIMPUFF = puffed-up inner rim (YES or NO)
+
+RIMHEIGHT = scale for inner rim puff (adds to scaleheight).  (see WARPHEIGHT for more explanation).
+
+RIMLENGTH = radial scale-length for inner rim puff (AU, bigger is slower)
+
+CGAPCURVE = curved inner gap wall (YES or NO)
+
+GAPCURVELENGTH = radial scale-length for wall curve (AU, bigger is slower falloff)
+
+GAPCURVEHEIGHT = scale for gap wall curve (units of scale height)
+
+GAPCURVEEXP = exponent for curvature of rim (modify in conjunction with gapcurvelength)
+
+CGAPPUFF = puffed-up cavity wall at outer gap (YES or NO)
+
+GAPHEIGHT = scale for gap puff (adds to scaleheight)
+
+GAPLENGTH = radial scale-length for gap puff (AU, bigger is slower)
+
+CMISALIGN = misaligned inner disk (YES or NO)
+
+RADMISALIGN = outer radius of misaligned inner portion of disk (AU)
+
+INCMISALIGN = inclination of the misaligned disk (degrees)
+
+'*** Large grains "settled" disk (disk 1) *** '
+
+(This is a change from the 2008 version of the code:  We now have effectively
+two disks, which can have different structures and grain properties.  
+This allows you to play with dust settling properties,
+or have different dust at different radii in the disk (i.e., each disk start
+and end at different radii and have different dust in them).
+Here we have put the large grain model into disk 1, with half the scale height
+of disk 2.  We put ISM grains in disk 2.)
+
+DUSTNAME(1) =  Dust file containing dust properties for large thermal grains.
+www003.par is a model that worked reasonably well for HH30
+(Model 1 in Table 1 in Wood et al. 2002, ApJ, 564, 887).  These 
+had grains as large at 1 mm.
+Note, www005.par and www006_extrap.par are Models 3 and 2, respectively
+ from Table 1 of Wood et al. (2002), with minimum grain sizes of 0.01 micron.
+If very small grain emission is included, we use
+www003_no200_rescale.par, as our large grain model.  This is the same as www003
+but does not include the grain population with size smaller than 200A as they are
+calculated with the small grains.  Note that this does not produce a noticeable effect
+on the output so if you have some other prefered dust file, it should be okay to use
+in conjunction with the small grain models (next).
+
+DUSTNAME(5) = Dust file for very small <200A grains (draine_opac_new.dat)
+
+FSG(1) = Fraction of mass in <200A grains for disk 1.  If you want to include PAH/very small
+grain emission, the default setting for this fraction is 0.1937.  This gives about 5% 
+of grains in PAHs and about 15% in small grains (< 200 Angstrom radius), the
+rest in large grains.  These are standard Galactic abundance values quoted by
+Draine.  However, low-mass TTS stars show few PAHs and the theory is that x-rays
+destroy them (Siebenmorgen & Krugel, 2010) so we set FSG=0 for the low-mass TTS models.
+
+ZSCALE(1) =  Scale height in RSTAR (if CZMIN=RSTAR), HSEQ (if CZMIN=RSUB),
+or AU (if CZMIN=R100).  e.g., 0.005 if CZMIN=RSTAR, 0.5 if CZMIN=RSUB, 5 if CZMIN=R100.  
+Note: for large-grain settled disk, I usually set this to half of ZSCALE(2) (the small grain 
+disk, below; or instead you could set B(1) to be lower than B(2))
+
+A(1) = Disk radial density exponent (~r^(-a))
+
+B(1) = Disk scale height exponent (~r^(b) (this could be smaller than B(2) to simulate
+dust settling or you can make ZSCALE smaller or both)
+
+You can have a different density profile in the gap, specified by the following 4 parameters:
+
+ZSCALE_GAP(1) = Scale height of gap (use same units as ZSCALE)
+
+RMAXD(1) = Maximum disk radius in AU
+
+RMIND(1) = Minimum disk radius in RSTAR, RSUB or AU (as set by CRMIN):  e.g., 7 Rstar, or 1 Rsub, or 0.1 AU.
+
+A_GAP(1) = gap radial density exponent
+
+B_GAP(1) = gap scale height exponent
+
+RHOSCALE_GAP(1) = ratio of gap *surface* density just inside RGAPD2 to value just outside
+
+'*** Small grains disk (disk 2) *** '
+
+DUSTNAME(2) = dust file for the small (thermal)  grain (unsettled) disk.  Default is 
+kmh_no200_rescale.par if small grain emission is included, or kmh.par if not (doesn't make
+much difference).  This is an ISM grain model (Kim et al. 1994).
+
+DUSTNAME(6) = Dust file for very small <200A grains (draine_opac_new.dat)
+
+FSG(2) = fraction of mass in <200A grains for disk 2 (default is 0.1937).
+
+ZSCALE(2) =  Scale height in RSTAR (if CZMIN=RSTAR), HSEQ (if CZMIN=RSUB),
+or AU (if CZMIN=R100).
+e.g., 0.01 if CZMIN=RSTAR, 1.0 if CZMIN=RSUB, 10 if CZMIN=R100.  
+
+RMAXD(2) = Maximum disk radius in AU
+
+RMIND(2) = Minimum disk radius in RSTAR, RSUB or AU (as set by CRMIN):  e.g., 7 Rstar, or 1 Rsub, or 0.1 AU.
+
+A(2) = Disk density exponent for disk 2
+
+B(2) = Disk scale height exponent for disk 2
+
+ZSCALE_GAP(2) = Scale height of gap (use same units as ZSCALE)
+
+A_GAP(2) = gap radial density exponent
+
+B_GAP(2) = gap scale height exponent
+
+RHOSCALE_GAP(2) = ratio of gap *surface* density just inside RGAPD2 to value just outside
+
+'*** Radial Exponential cutoff to disk *** '
+
+CRADEXP = add radial exponential cutoff to disk density (YES or NO)?
+
+RADEXP = scale-length for exponential cutoff in AU
+
+'**** Disk/star accretion properties ****'
+
+CDISKACC = YES for include disk accretion luminosity, NO for
+not.  If NO, disk accretion rate and luminosity are set to 0.
+If YES, they are calculated from eqn. (5) in Whitney et al. 2003a 
+(ApJ, 591, 1049; Paper I).  We also emit accretion luminosity at the star
+following the ideas presented in Calvet & Gullbring (1998ApJ, 509:802)
+and described in Paper III, section 3.8.  Half the flux is emitted as x-rays 
+(which heats the disk) and half
+as stellar flux at a higher temperature.
+
+CALPHA = YES to input alpha disk accretion parameter, NO to input
+Mdot (if CDISKACC='YES').  
+
+ALPHA/MDOT = If CALPHA=YES, input disk alpha parameter (typically 0.01-0.05). 
+If CALPHA=NO, input accretion rate in units of Msun/yr (typically 10^(-7)- 10^(-9)).
+These are just different ways to specify the amount of disk accretion.
+(only used if CDISKACC='YES').
+
+RTRUNC = disk magnetosphere co-rotation radius, where the material
+follows the field lines to the disk.  used in calculation of hotspot
+temperature (only used if CDISKACC=YES).
+Note:  since we don't include gas emission in our code, we don't include
+accretion luminosity between RTRUNC and RMIND (if RTRUNC<RMIND).
+If you would like to emit that 
+accretion luminosity from the stellar hotspot, set RTRUNC=RMIND.
+(see section 3.8 of Paper III).
+
+CSPOT = YES or NO to include hotspot on star.  If no, the stellar accretion luminosity is
+emitted over the entire surface of the star.  It's temperature is correspondingly lower
+than if it arises from a smaller hotspot.
+
+SPOTLAT = location of spot on star (degrees latitude)
+
+NSPOT = number of spots (1 or 2)
+
+CTEMP = YES to read spot temperature, NO to read Fractional spot size (computes one from the other)
+
+TSPOT/FSPOT = input Temperature of hotspot if CTEMP=YES.  Enter fractional area 
+of hotspot if CTEMP=NO (typically varies between 0.001 and 0.01
+in active accretion disks according to Calvet & Gullbring 1998)
+(only used if CDISKACC=YES).   If you want to recreate the results
+in Whitney et al. (2003a,b), set FSPOT=1.  It's not exactly the same
+because we now emit x-rays, which we didn't do before.  
+Note: If CDISKACC=YES and FSPOT=0, the program stops, because this is
+a singularity.  
+If NPG=2 (2-D axisymmetric, see below), the output SEDs vs viewing angle are averaged
+over phi.  However, the PEELED images and SEDs are effectively 3-D since the spot
+emission is calculated as in 3-D. 
+
+'**** Envelope Properties ****'
+
+DUSTNAME(3) = dust file for envelope.  r400_ice095.par has grains with
+r_V=4, as measured in Taurus (Whittet et al. 2001, ApJ, 547, 872), 
+with water ice covering 5% of the outer radius.
+If including very small grain emission (FSG > 0), you should use
+r400_ice095_no200_rescale.par, though it doesn't change the results
+noticeably (which means if you have your own favorite opacity file, you
+can probably use it in conjunction with the small grain emission as well).
+
+DUSTNAME(7) = Dust file for <200A grains in evelope (draine_opac_new.dat)
+
+FSG(3) = fraction of mass in <200A grains for the envelope (default Galactic value
+is 0.1937, default low-mass TTS value = 0).
+
+RMAX  = Maximum envelope radius in AU.  
+
+RMINE = Minimum envelope radius in RSTAR, RSUB, or AU (depending on the value of CRMIN).
+
+ENVTYPE = ULRICH (rotational infall) or POWLAW (power law)
+
+RATE = (if ENVTYPE=ULRICH) Mass infall rate for TSC envelope (solar masses/year) (eqn. 1
+of Paper I, which has a typo.  (GM/Rc^3)^{-1/2} should be
+(G M Rc^3)^{-1/2}.  
+
+*Note, if you are running a disk-only model, set
+RATE=0, set RMINE = same as RMIND, set RMAX = same as RMAXD.
+This optimizes the grid spacing.*
+
+RC = (if ENVTYPE=ULRICH) centrifugal radius for TSC envelope (AU).  usually you'll set
+this the same as RMAXD (above) and RCHOLE (below).
+
+RHODENS1 = Fiducial density at 1 AU, if ENVTYPE=POWLAW
+
+ENVEXP = Exponent for power law density, if ENVTYPE=POWLAW
+
+RHOAMB = ambient density (gm/cm^3).  This is a floor to the density everywhere in the grid
+(except inside of the minimum radius (RMIND or RMINE)).  
+I usually take some average molecular cloud density.
+
+'****  option for Fractal density variations ****'
+
+CFRACTAL = YES or NO to include fractal variations in density
+
+DENSRATIO = ratio of clumped to smooth density
+
+FRACTMASK = 4-element mask to apply to disk1,disk2,envelope,outflow (0=no, 1=yes).
+e.g., 0,0,0,1 means only the outflow cavity has clumpy density variations.
+
+IFSEED = Negative integer seed for fractal density
+
+'*****  GAP in envelope *****'
+
+CGAPE = YES or NO for gap in envelope
+
+RGAPE1 = Inner envelope gap radius (AU)
+
+RGAPE2 = Outer envelope gap radius (AU)
+
+CGAPEDENS = SCALE or CONST for scaled or constant (respectively) density in gap
+
+FRACTE = Gap density ratio if CGAPEDENS=SCALE
+
+RHOGAPE = Gap density if CGAPEDENS=CONST
+
+'**** Bipolar Cavity Properties ****'
+
+DUSTNAME(4) = dust file for outflow's cavity.  kmh.par is an ISM grain model
+(discussed in Wood et al. 2002, and Whitney et al. 2003a).
+you can use r400_ice095.par if you prefer.  If very small grain emission is included,
+use kmh_no200_rescale.par (makes little difference but is technically corect).
+
+DUSTNAME(8) = Dust file for <200A grains for the cavity (draine_opac_new.dat)
+
+FSG(4) = Fraction of mass in <200A grains for the cavity, default is 0.1937 if you want
+to include PAH/VSG emission.  If not, set to 0.
+
+CHOLE = YES for cavity carved out, NO for no cavity.  
+
+CSHAPE = POLYN if polynomial-shaped cavity, STREAM if streamline.
+This shape applies to the outer cavity wall surface (see below).
+The streamline equation is given in eqn (2) in Paper I. STREAM requires ENVTYPE=ULRICH.
+The polynomial is ~ w^ex1, where w=sqrt(x^2+y^2) (see below)
+
+RCHOLE  (only used when CSHAPE=STREAM)
+The streamline hole is defined by the envelope centrifugal
+radius, RC, but you have the option to choose a different value than the value
+used by the envelope.  if you set RCHOLE=0, this will make a conical cavity.
+For RC > 0, the cavity intersects the disk at a larger radius.
+
+We now have 2 cavity wall surfaces, to allow for higher density in cavity wall (between
+the 2 surfaces).  If CSHAPE=POLYN, they are both polynomial shaped.  If CSHAPE=STREAM, the
+inner wall is polynomial, outer is streamline.  The inner wall can be made invisible
+by giving it the same density as the inner cavity:
+
+THET1 = Opening angle of inner cavity surface. This has a polynomial shape with 
+parameters set by EX1 and Z01 below.
+ Note:  in disk-only model (no envelope), I usually set this to 90.
+
+EX1 = Inner cavity surface shape exponent, ~ w^ex1, where w=sqrt(x^2+y^2), 
+i.e., w is cylindrical radius.  (see section 2.1 of Paper I)
+
+Z01 = z-intercept (AU) of inner cavity surface at w=0 (can offset either way).   
+cavity shape is now, z01+w^ex1. 
+
+THET2 = Opening angle of outer cavity surface (if CSHAPE=POLYN, otherwise uses streamline).  
+Note:  in disk-only model (no envelope), I usually set this to 90. 
+
+EX2 = Cavity wall exponent for outer surface,(if CSHAPE=POLYN) ~ w^ex2, where w=sqrt(x^2+y^2), 
+i.e., w is cylindrical radius.  (see section 2.1 of Paper I)
+
+Z02 = z-intercept (AU) of outer cavity surface at w=0 (for CSHAPE=POLYN,
+can offset either way).   cavity shape is now, z02+w^ex2. (w is cylindrical radius).
+
+EXF = exponent for cavity density power-law: rho=rhoconst*r^(-exf).  (same for
+inner cavity and cavity wall unless users prefer something different). 
+
+RHOCONST1 = Coefficient for inner cavity density distribution.  
+it's the density of the cavity at RMINE, in gm/cm^3.  
+
+RHOCONST2 = Coefficient for cavity wall density distribution.  
+it's the density of the cavity at RMINE, in gm/cm^3.  
+
+'**** SG properties ****'
+
+RMIN_SG = minimum radius of <200A grains.  Set equal to RMIND or RMINE usually.
+
+'**** Output Data ****'
+
+IMFILT = YES or NO for output images convolved with broadband wavelength filters.  default is YES.  not computed
+if CPEEL=NO.
+
+IMCUBE = YES or NO for output multi-wavelength image cubes.  This is cool but takes a lot
+of disk space.  Set to YES if you want essentially a movie of the image in wavelength space.
+If not, set to NO and save lots of disk-space.
+
+NXIMG = number of pixels in each dimension of the (square) image (if CPEEL=YES).  If you want the option
+for rectangular images, let me know.
+
+NPEEL = Number of peeled off angles for SEDs and Images.  **NOTE:  This is a change from 
+the 2008 code.  You can now have multiple peeled directions.
+
+NAP = number of apertures for SEDs.  Set this to 50 to agree with the Robitaille
+et al. (2006) grid of models.  otherwise, set it to a smaller number (like 1)
+to minimize size of output files.  You might prefer multiple apertures if your data
+are taken in multiple apertures. 
+
+RMAXI = Output image half-size in AU.
+
+APMIN = Minimum aperture in AU.  Set to 100 to agree with Robitaille grid.  otherwise set to your observed 
+minimum aperture
+
+APMAX = Maximum aperture in AU.  Set to 100,000 to agree with Robitaille grid. otherwise, set to your
+observed maximum aperture.
+
+Note:  If only doing one aperture (NAP), set APMIN equal to APMAX
+
+THETE = for CPEEL=YES theta angle (deg) of high S/N images, and SEDs.
+varies from 0 for viewing down the +z polar axis, to 180 for viewing
+down the -z axis.  90 is edge-on viewing.
+Example for 3 viewing angles (NPEEL=3):  [65.0,65.0,65.0].  (this is an example
+where phi varies, not theta).
+
+PHIE = for CPEEL=YES phi angle(s) (deg) of high S/N image(s)/SED(s).
+Example for 3 viewing angles:  [0.0,30.0,60.0]
+
+NMU = Number of theta image/SED bins for SED output.  default is 20
+
+NPH = Number of phi image/SED bins for SED output. default is 1.  set to 20 (or more)for 3-D model.
+
+NFREQ = Number of frequencies for SEDs.   Use smaller numbers for higher signal-to-noise.
+Use larger numbers for picking out spectral features (PAH and broad dust features).
+
+'*** Advanced ***'
+
+DIFFUSION  = YES or NO to use diffusion.  Default is YES.
+
+'*** Grid parameters ***'
+
+NOTE:  This is a new feature of the 2013 code.  Here you can set up a 1-D, 2-D, or 3-D 
+grid.  
+example 1-D.  NRG=400, NTG=3, NPG=2;   
+example 2-D:  NRG=400, NTG=199, NPG=2.   
+example 3-D:  NRG=400, NTG=199, NPG=120.  (for TTS disks, you need lots of theta grid cells
+to resolve the midplane, so that is why NTG is bigger than NPG, the opposite of what you 
+expect since theta ranges from 0-180 and phi ranges from 0-360)
+NOTE on 3-D models:  This takes a lot of RAM.  use the "top" or "ps" command to determine 
+if you have enough memory, especially when running in parallel.
+
+NRG = Number of radial cells
+
+NTG = Number of theta cells.  set to 3 for 1-D models.
+
+NPG = Number of phi cells.  set to 2 for 2-D or 1-D models.
+
+III.  Output
+
+Note: we now have the option to output in either ascii and unformatted files,  or fits files.  
+I describe the ascii files as before and add in the corresponding fits file in parentheses.
+
+
+flux.dat (flux_hypercube.fits.gz) contains the output spectra at NMU*NPH inclinations,
+NAP aperture sizes, NFREQ frequencies for the four stokes parameters (I,Q,U,V).  
+In 2-D axisymmetric models, all the linear polarization is in Q;
+U and V should reflect the noise, and should be similar to the errors
+tabulated in flux.dat.
+The errors are calculated as in Wood et al. 1996 (ApJ, 461, 828).
+See Section V for units and format of this file.
+
+Other useful flux files are flux_dire.dat (direct stellar flux extincted by the
+disk/envelope), flux_disk.dat (flux originating from the disk), flux_enve.dat
+(flux originating from the envelope), flux_outi.dat (flux originating from
+outside illumination), flux_scat.dat (scattered stellar flux), flux_star.dat
+(flux originating from the star), flux_ther.dat (flux from thermal emission).
+(For the fits option, these are all combined in flux_hypercube.fits.gz).
+
+peel_flux_[THETE]_[PHIE].dat is similar to flux.dat except it only tabulates flux at
+a particular viewing angle, THETE and PHIE.   The associated files are 
+peel_flux_dire_[THETE]_[PHIE].dat , peel_flux_disk_[THETE]_[PHIE].dat ,
+peel_flux_enve_[THETE]_[PHIE].dat , peel_flux_outi_[THETE]_[PHIE].dat ,
+peel_flux_scat_[THETE]_[PHIE].dat , peel_flux_star_[THETE]_[PHIE].dat ,
+peel_flux_ther_[THETE]_[PHIE].dat.
+(For the fits options, these are all combined in peel_hypercube.fits.gz).
+
+The e_*.dat files (e_*.fits.gz) are images (only written if CPEEL='YES').  The names 
+are decoded as follows:
+e_(filter function)_(inclination THETE in degrees)_(inclination PHIE in
+degrees)_(I,Q,U, or V Stokes vector)_img.dat  Currently the filters are
+2J  2mass J, 1.2 um (microns)
+2H  2mass H, 1.6 um
+2K  2mass K, 2.2 um
+I1  Spitzer IRAC 1, 3.6 um
+I2  IRAC 2, 4.5 um
+I3  IRAC 3, 5.8 um
+I4  IRAC 4, 8.0 um
+M1  Spitzer MIPS 24 um
+M2  MIPS 70 um
+M3  MIPS 160 um
+H1  Herschel PACS-1 70 um
+H2  Herschel PACS-2 110 um
+H3  Herschel PACS-3 170 um
+H4  Herschel SPIRE-1 250 um
+H5  Herschel SPIRE-2 360 um
+H6  Herschel SPIRE-3 520 um
+Z1  box filter:  user can change wavelengths
+Z2  box filter:  user can change wavelengths
+
+Note:  I took out these filters:
+S1  IRAS 12 um
+S2  IRAS 25 um
+S3  IRAS 60 um
+S4  IRAS 100 um
+XA  MSX band A, 8 um 
+XC  MSX band C, 12 um
+XD  MSX band D, 15 um
+XE  MSX band E, 21 um
+If you want them back, you or I can put them in your version. I wanted to save disk space
+on the output files.
+
+If you want to add your own filters see section VI.
+
+If you set IMCUBE=YES in mctherm.par, you will get out e_cube* images for the four stokes parameters and the selected
+peeled viewing angles (THETE, PHIE).  These are fun images that you can view in ds9.  The dimensions are
+NXIMG*NXIMG*NFREQ*8.  In ds9, you can slide through the cube and view a movie of the image vs wavelength.  
+There is also a set of IDL programs to make animated gifs of these (in section IV.)
+The last dimension of this array (with 8 indices) has photons binned into last origin of the photon emission and the last
+interaction.  These are:  1) All photons, 2) star origin, 3) disk origin, 4) envelope origin, 5) outside illumination, 
+6) no interaction since emission (just extinction), 7) scattered, 8) thermal.   Each photon will appear 
+in the first index, one of 2-5, and one of 6-8.
+
+disk.dat tabulates various information about the model run.  Another
+useful file in this regard is the log file, which you can get from
+running the doit.csh script to run the program.  (../doit.csh &)
+If you are running the parallelized version of the code, instead of disk.dat
+it writes the output to p_disk-parent.log and p_disk-child[N].log where N ranges from
+0001 to the number of processors. 
+
+The Av_*.dat files contain information about the visual extinction at V band (5500 A).
+Av_90.dat (extinction at 90 degrees), Av_grid.dat (extinction at grid angles
+theta and phi), Av_peel.dat (extinction at peeled angles THETE and PHIE),
+Av_view.dat (extinction at NMU and NPH angles)
+
+tmidplane[n].dat tabulates the temperature at the disk midplane
+at each radius, for the 8 different grain types in the model (specified
+in mctherm.par).  The last two columns are the temperature calculated
+in 2 different ways.  The far right column is a more accurate temperature
+calculated using the Lucy method (1999, A&A, 344:282) at the end
+of the run by summing up pathlengths in every cell.  The 5th
+column is the temperature computed from the absorbed photons in each
+cell.  This is the temperature used by the code.  If this isn't close
+to the 6th column, you need to run more photons.  However, for plotting,
+the 6th column has higher signal-to-noise.
+
+rwalls.dat, thwalls.dat, phiwalls.dat tabulate the grid cell wall locations
+for r, theta, and phi.  An easy way to see what the inner disk
+radius is in various units is by looking at rwalls.dat.
+The cell centers are tabulated in rave.dat,thave.dat,phiave.dat.
+
+If you don't run with fits i/o, there are some *.unf files which are unformatted 
+fortran files of the density array (darr.unf), mass array (marr.unf), temperature array 
+(tarr.unf), and the location of the different dust regions (dust.unf). 
+Others that probably aren't as interesting to you are the number of
+photons absorbed in each grid cell (nabs.unf), location of diffusion
+region (diffuse.unf), and diffusion directions (diffdir,unf).
+there's also tarr2.unf which is temperature calculated at the end
+of the program using lucy method--it has much higher s/n.  this is a better
+one to plot.
+(For the fits option, these end with .fits.gz instead of .unf)
+The temperature (tarr) and density (darr) files can be viewed as azimuthal
+slices using the idl program trho3d.pro (trho3d_fits.pro).
+The temperature and density files (tarr, darr) are separated into dust types in each grid cell.
+It is sometimes easier to see these summed up.  These are in the files tarrdw* and darrtot*.  darrtot
+sums up the density over all the dust types.  tarrdw* is a density weighted average of the temperature
+over all the dust types in a given cell wall.
+(note: trho3d.pro does a similar summation and averaging of darr and tarr).
+See section IV.C. for more description of these programs.
+The fits images can be viewed in ds9, but keep in mind that you are viewing spherical
+polar arrays with variable spacing in r and theta, not properly re-mapped onto an x-z grid
+(trho3d.pro does this mapping).
+On the other hand, it lets you see the small inner grid cells as easily as the
+outer grid large cells.
+These arrays have spatial dimensions (nrg, ntg, npg) and another dimension which is
+the 8 different dust species currently in the code:  1) disk 1 thermal grains, 2) disk 2 thermal grains, 
+3) envelope thermal grains, 4) outflow thermal grains, 5) disk 1 PAH/VSGs, 6) disk 2 PAH/VSGs, 
+7) envelope PAH/VSGs, and 8) outflow PAH/VSGs.
+The program trho3d.pro sums the densities over the different grain types, and does a density weighted
+average of the temperature; or it can plot each grain type.
+
+The code generates a lot of files per model run, especially in 3-D runs. 
+It is recommended to run the cleanup.csh script to remove a lot of these files
+after a run.  just type ../cleanup.csh in your model directory.  You can
+edit cleanup.csh to pick and choose which files you want to delete.  The default
+is deleting files most users will never care about.
+Note:  you don't need to do this for fits option.  The files are much smaller.
+
+IV.  IDL programs for looking at the results.
+
+Several of these programs use the IDL Astronomy User's library of programs
+(http://idlastro.gsfc.nasa.gov/contents.html).  You'll need to download
+this library if you don't have it.
+I would like to someday convert all these routines to python.  If anyone wants
+to share python plotting routines with us, please email me!
+
+This requires some knowledge of IDL. IDL commands are shown in parentheses.
+Most of the programs make postscript files rather than plotting to
+the screen
+
+These IDL programs have several things commented out.  there are several ways to
+plot and overplot and the commented out lines show examples.
+
+A. To plot spectra and polarization.
+
+1. plotsed (@plotsed).  Edit plotsed to set the directory and make other changes.
+plots the spectrum at up to NMU inclinations. Set oplot to 0 for your first
+plot, after your first plot, set oplot to 1 to plot other SEDs in the same
+window. You can plot single viewing or multiple viewing angles.  You can compare
+various model runs on top of each other.  You can plot peeled vs unpeeled spectra.
+Makes the postscript file sed.ps.
+
+2. plotsedt (@plotsedt).  plots 4 sets of spectra:  the total spectrum 
+(same as plotsed); thermal; stellar direct; stellar scattered.  makes
+sed4t.ps.  This is cool, if you ask me. 
+
+3. plotsedte (@plotsedte).  plots 4 sets of spectra (if you ran with
+CPEEL=YES) at angle THETE, PHI:  thermal; stellar direct; stellar scattered.  
+makes sed4te.ps
+
+4. plotsedo (@plotsedo).  plots 4 sets of spectra:  the total spectrum
+(same as plotsed); stellar origin; disk origin; envelope origin;  origin
+is defined as last point of emission (either stellar or thermal; not
+scattered.  includes scattered photons but scattering is not considered 
+a point of origin).  makes sedo.ps   also cool, if you ask me.
+
+5. plotsedi (@plotsedi).  plots initial luminosity sources:  total,
+star/no hotspot, stellar hotspot, disk accretion, outside illlumination.
+only works with cfitsio option at this time.
+
+6. plotsed3dfits (@plotsed3dfits).  plots SEDs, lightcurves, and polarization curves for 3-D models
+viewed at various directions.  e.g., rotating hotspot/warped disk model.
+
+5.  plotpol (@plotpol).  Plots the polarization spectrum.   You'll need to 
+run more photons to get good spectra (just like data!).  makes pol.ps.
+as in plotsed, you can plot single or multiple viewing angles, peeled or
+unpeeled (using pol or pole subroutines) and overplotting.
+
+6.  Obsolete:  plotsede, plotpole
+
+B. Images
+
+1.  If you don't compile the code with the fitsio option, you first need to convert the images to 
+fits files using the runfits script in IDL (@runfits). 
+Before running runfits, edit the runfits script to set the 
+model directory, image radius (RMAXI in mctherm.par) FWHM, and other parameters.
+This function convolves with a gaussian PSF of 
+specified FWHM (in arcseconds) and adds in foreground reddening if desired.  
+This generates a bunch of fits files. You can edit this to generate as few or
+as many as you want, including all of the polarization images (stokes parameters
+or polarized flux).   You can view these in ds9, making 3 color images etc.  It's pretty fun.  
+If you do compile the code with the fitsio option, you are ready to go.  you can view the
+images in ds9, or use the plotting programs below to make postscript images.
+
+2.  The script plot3col makes a 3-color postscript image from
+the models (@plot3col).  Note:  restart IDL before running this.  If you made
+SED plots, the color scale is set for 8-bit color or something; it messes up
+the colors.  exit and restart and it will give normal colors.
+You will have to choose the value of "minscale" from trial and error (doesn't
+take long).  
+Note:  if you use fitsio, you will use the 'fits.gz' extension for the file names.
+Otherwise, use the 'fits' extension created when you ran @runfits (above, step 1).
+It placed the files in the IDL directory, so in plot3col, set dir='', and use the 
+'fits' extension for the file names.
+
+You can also use it on data images, though you'll 
+probably have to modify the part that reads in the pixel scale from the header,
+to get your specific keyword.  
+
+These can also be used to make 3-color images of polarized flux!
+See the commented out lines in the runfits script---it runs makefitspol.pro
+with the I,Q, and U images and writes out a polarized flux fits file
+at that wavelength.  Then plot3col is run same as with the intensity
+images.   makes 3col.eps
+
+2.  polarization maps.  If not using fitsio, first make the fits files with runfits (@runfits).
+See the lines at the bottom of this file.  Then run polmap.pro with
+the appropriate fits files as input.  If using fitsio, run polmap_fits.pro.
+
+3.  makemovie (@makemovie).  makes a movie from a bunch of images.  e.g., varying viewing angle, 
+or wavelength.  This creates *.png files for each image in your movie.  A script, make_movie.csh
+will convert them into an animated gif file.  Edit this script to include your exact images. 
+You run this outside of IDL.  Type in the command line:  /bin/csh make_movie.csh
+The examples given are for the model modcII_misalign.
+If using fitsio, edit the file to call movie_fits.  If not using fitsio, edit the file
+to call movie.  Examples of both are give (commented out).
+
+4.  makewavemove (@makewavemovie).  makes a movie in wavelength space.  run code with IMCUBE=YES 
+only works with fits files (compiling code with fits I/O option).  The example given is for
+modcII_gap_spiral.  These are fun and educational.  Run make_moviewave.csh to create an animated 
+gif from all the *.png files.  exit IDL (or use another terminal window), and type in the command 
+line:  /bin/csh make_moviewave.csh.
+
+C. density and temperature
+
+1. to plot the density and temperature, you can run trho3d.pro (trho3d_fits.pro).
+It makes a file called trho.ps.  edit trho3d.pro to plot different radii.  
+There is an option to sum the densities over the different grain types, and does a density weighted
+average of the temperature; or to plot each one separately. (see section III for more descriptions of these files).
+You can viewed the fits files in ds9, but they have not been mapped onto spherical polar
+coordinates.  A colorbar has been added.  It sometimes complains and halts the program.  Just type
+"return" and the program will continue to run.
+I'm sorry to say that the program is a bit finicky.  If you get this error:
+"CONTOUR: X, Y, or Z array dimensions are incompatible", it's can usually be fixed by
+changing the outer radius by a small amount.  I don't understand why but it works.
+e.g., change 10000. to 9999.
+
+2.  plottr  (@plottr): line plots of temperature vs. radius at various 
+inclination angles.  modify tinc_a.pro to vary angles.  makes tr.ps.
+The purple line is the spherically averaged value.  The green lines
+are power laws, r^{-0.33} (~optically thin), and r^{-0.4} (~optically
+thick) scaled to the spherically averaged value at
+an arbitrarilly chosen radius.  in the Stage I models you can see
+the transition from optically thin to thick as a line of sight
+goes from the cavity to the envelope.  The Stage 0 model is steeper
+than either of the power laws.
+
+D. Color-color plots
+
+set ifilt=1 in plotsed, and that will convolve the SED with several broadband filter
+functions and print out a file called filterfluxes.txt containing the flux in Jy
+at each waveband.  run cc_simple.pro to make a color-color plot, and cm_simple.pro to make a 
+color-magnitude plot. It's set up to plot two models.  you can add more. 
+
+E.  Miscellaneous programs
+
+1.  dustprop.pro plots up the dust properties (.run dustprop).
+makes dustprop.ps
+
+2.  accret.pro (.run accret) calculates disk accretion rate based on 
+disk/stellar parameters.  
+
+3.  honr.pro (.run honr) calculates disk scale heights at various radii.
+
+4.  lum.pro (lum,rstar,tstar) calculates stellar luminosity for Rstar and Tstar.
+
+6. Obsolete or still testing:  tau1surf.pro, plotaveinc.pro
+
+V.  Units and Formats
+
+Input:  
+
+Dust opacity file.
+The columns for the dust opacity file are
+wavelength(microns), Cext, Csca, Kappa (cm^2/gm), g, pmax(90), thet.
+The last column is ignored.  Albedo is calculated from Csca/Cext so units 
+aren't important but the ratio is.  The opacity (kappa in cm^2/gm) is 
+the dust+gas extinction opacity (absorption + scattering), not dust-only 
+(assumes a gas-to-dust ratio of 100).
+g is average cosine theta of the scattering angle.  It's used in the our 
+scattering function, which is a modified henyey-greenstein function 
+(Whitney et al. 2003a).
+
+Stellar atmosphere file.
+This contains one header line.  The input is in 2 columns, 
+The first column is wavelength in microns.  The second column
+is in Hnu/(4*pi) units, ergs/s/Hz (note, our values are a factor
+of (4*pi) greater than Kurucz model values.).   To compute a stellar flux
+from this, you'd multiply by Rstar^2/d^2, where d is distance to the source.
+Note that the file format has changed from the 2005 version of the code.
+NOTE:  you can obtain stellar atmosphere files with this format for any
+temperature, gravity, metallicity at:
+http://caravan.astro.wisc.edu/protostars/codes.php
+at the bottom of the page.
+
+Output:
+
+flux.dat, flux_dire.dat, peel_flux.dat etc. 
+The output in flux.dat is in columns with wavelength, flux (nu*Fnu),
+flux err, and fractional polarization Q/I, Q/I err, U/I, U/I err, V/I, V/I err.  
+The number of frequencies (nfreq), phi viewing angles (nph), and theta viewing
+angles (nmu), and aperture (nap) are listedi n the first line.
+The file has nfreq*nap*nmu*nph+1 lines in it.
+The subroutine that wrote them had the following loop order
+       do ia=1,nap
+          do i=1,nmu
+             do ip=1,nph
+                do inub=1,nfreq
+
+that is, the inner loop is frequency, then phi, theta directions, then aperture.
+The units of the flux are nu*Fnu in ergs/s.   To scale to
+distance, multiply by Lsun/(4*pi*d^2).  Note: this is different from
+the previous version of the code, where you also had to multiply by
+source luminosity.  I normalize to Lsun to prevent numerical overflow for
+high luminosity sources.
+
+for the peel_flux*.dat file where output is only at one frequencey, the
+loop that write the file is over aperture (ia) and frequency (inub)
+             do ia=1,nap
+                do inub=1,nfreq
+
+For the fits data (flux_hypercube.fits.gz, peel_hypercube.fits.gz), much of the information
+can be found in the headers and extracted with your favorite fitsio tools (ds9, fv, idlastro, python).
+The main array in peel_hypercube.fits.gz has dimensions of NFREQ*NPEEL*NAP*NORIG*NSTOKES.  
+NFREQ, NPEEL, NAP are input.  NORIG is 8 and represents the following:  total, stellar, 
+disk, envelope, external illumination, direct, scattered, and thermal.  NSTOKES is 8, 
+and represents I, Ierr, Q, Qerr, U, Uerr, V, and Verr.
+flux_hypercube.fits.gz is similar, with dimensions of NFREQ*NMU*NPH*NAP*NORIG*NSTOKES, 
+where NMU and NPH are input angle directions.
+Both of these files also include wavelength, aperture, and angle arrays (flux* doesn't 
+include the angle arrays).
+
+Images.  the images are in units of MJy/Sr (Intensity).
+They do not have to be rescaled as they are independent of distance.
+
+the polarization images
+(Q, U, V) are normalized to the intensity images (I).
+
+VI.  Modifying the code.  
+
+1) If you want to add new filter functions to
+make images at different wavelengths than the ones currently in the code,
+you have 3 choices:  1) you can ask me to do it;  send me your filter functions in a similar
+format to the ones in the models/parfiles directory (1 header line, 
+2 columns, wavelength in microns and phi_nu, doesn't have to be normalized).
+Notice these go backwards in wavelength--from largest to smallest.
+2) you can modify the Z1.txt and Z2.txt files in the models/parfiles 
+directory to make a box filter of your choosing--you can't change the 
+number of wavelengths in these files.
+3) You can add in your own filters.  It's not hard.  Here is how you do that:
+You need filter files in a similar format to the ones in the
+to the ones in the models/parfiles directory (1 header line, 2 columns,
+wavelength in microns and phi_nu, doesn't have to be normalized).
+Notice these go backwards in wavelength--from largest to smallest.
+In the src directory, edit the following: 
+
+filt_mod.f90
+add the new filter names to the filtnames array.  change nfilt and nwfilt. nwfilt
+is the number of lines in the filter file.
+
+filt_nu.f90
+you don't have to edit this anymore
+
+tts_mod.f90
+
+change nbnd to the same number as nfilt in filt_mod.f90 
+(yes, this is dumb programming).
+
+After you make the changes to the code do
+
+make clean
+make 
+
+VII.  Tips
+   1)  After setting up the mctherm.par, and running the code *for just a few minutes*, there
+are several things you can check to make sure it's running the model you envision.
+     a)  Look at Av_grid.dat. This shows Av vs theta in the grid.  The disk midplane will
+have large Av's usually, polar cavity, much lower.  If your disk is overly flared,
+it might be a spherical envelope rather than a disk!
+     b) Look at rwalls.dat.  This shows the radius grid in various units (Rstar, Rsub, AU).
+The first point is the stellar radius.  the second is the disk or envelope inner radius.
+With the different options for the input units, it's possible to make a mistake here.
+Check the inner and outer radii in the various units to verify it's what you intended.
+     c) In the IDL directory, plot up trho3d_fits.pro or trho3d.pro.  This is highly recommended
+to do!   For the first iteration, it will only show density because the temperature hasn't
+been calculated.  if you wait for the first iteration to finish, you'll see the initial temperature
+as well.  But the density tells you a lot, like if you defined a disk geometry that is
+close to what you intended, or an envelope cavity size, and density, etc.
+   2) If you are emitting accretion luminosity from the disk, and RTRUNC is less than RMIND,
+then you are missing the accretion luminosity between RTRUNC and RMIND.  This is
+discussed in Paper III, section 3.8.  We chose to do this because we don't
+include gas opacity in the code, so rather than emit an erroneous accretion spectrum
+inside of RMIND, we chose to emit nothing.  If you want that luminosity emitted,
+you can always set RTRUNC=RMIND, and then the accretion luminosity that would have been
+emitted by the inner gas disk is emitted by the stellar hotspot.
+   3) Optimizing the grid spacing and code timing with RMINE and RMIND and RMAX and RMAXD.  
+RMAX sets the outer radius of the grid; must be as big or bigger than RMAXD (don't worry, 
+the code stops if you don't do this).  RMINE shouldn't be less than RMIND unless there 
+really is stuff there.  Otherwise, you are wasting valuable grid spacing and needless small 
+empty grid cell traversing.
+So in general, set RMINE to be greater than or equal to RMIND.  Same with RMIN_SG.
+*Note, if you are running a disk-only model, set RATE=0, set RMINE = same as RMIND, 
+set RMAX = same as RMAXD.  This optimizes the grid spacing.*
+And if you want no envelope density, set CHOLE=no. otherwise, you'll still get dust
+in the bipolar cavity if you defined one.
+If you want some spherical envelope density, you can set CHOLE=YES, THET1=THET2=90, and then
+use the cavity parameters to define a power law envelope.   or set CHOLE=NO and use
+the envelope in power law mode.  both will do the same thing.
+Also it might help to set the cavity opening angle to 90 and then 
+   4)  The different units for disk inner radius and scale heights.  If you set CRMIN to RSUB,
+then you are using units of sublimination radius.  this is usually several stellar radii (5-10 or
+more if it's a luminous source).
+You can check rwalls.dat to see what all the radius scales are.
+If you set CZMIN=RSTAR, typical default values for ZSCALE will be around 0.01.  If you
+set CZMIN=RSUB, typical default values for ZSCALE will be around 1.  If you set
+CZMIN=R100, typical default values for ZSCALE will be around 10-20.
+   5) For doing quick runs: See the directory modcII_quick for an example of parameters to change.
+That's mostly the parameters at the beginning of the file.  If you just want
+quick-look SEDs, set CPEEL=NO.   
+You can also set NFREQ to be smaller, and if you are looking at images, you can set NXIMG
+to be smaller.  and of course NP can be set to smaller until the results are too noisy to
+determine anything.
+   6)  1-D, 2-D and 3-D runs.  The first thing to do is make sure you are setting NPG, NTG
+and NRG appropriately.    In a 2-D run, set NPG=2 (end
+of the input file).  If you are doing a 1-D run, set NPG=2 and NTG=2.  and if it's a simple
+geometry, you can probably have much fewer NRG cells.
+For a 3-D run, you need to run more photons (NPMIN) to get a good temperature in each grid cell,
+than in a 2-D run.  
+Whitney (2011, BASI, 39:101), section 4.1 suggests that N_temp (=NPMIN here) should be at least 2*N_grid,
+where N_grid is the number of grid cells (NRG-1)*(NPG-)*(NTG-1).
+NP does *not* have to vary with 1-D, 2-D, or 3-D grids.  It determines the noise in the
+SEDs and images (see point 5).
+   7) If you want to play with disk flaring parameters, you usually want to change A while you change
+B. That is if you think the surface density has a typical radial behavior, usually A-B is between 1-1.5;
+so if you change B, modify A accordingly.
+   8)  The envelope can be used to mimic a third disk, e.g., if you want a disk with different dust
+in three different radius regions.  One disk can be inner most, the second middle, and the "envelope"
+thrid.  You can use the power-law feature of the envelope and the cavity to mimic a disk.  
+And they can all have gaps.
+   9)  If you change EXF, the power law index in the cavity, you'll have to change RHOCONST1 and RHOCONST2
+by several orders of magnitude to get a similar A_V in the cavity.   Check Av_grid.dat to make
+sure you are getting what you want in the cavity!
+   10) In models where you want to do PAH emission, see the example directory, AeBe_disk_pah.
+We set FSG = 0.1937.
+The PAHs alone are 0.0586, grains with sizes 20-200 are 13.51% and the rest are in big grains.
+These are typical abundances for the Milky Way Galaxy diffuse ISM (Draine & Li 2007, ApJ 663:866).
+We include emissivity and opacity files for the grains smaller than 200 A (PAH and vsgs combined).
+The opacity file is draine_opac_new.dat, and the emissivity files are emit_draine*.dat all
+in the parfiles directory.   These were supplied by Bruce Draine.
+We include some large-grain models with no grains smaller than 200 A; these have "no200" in the title.
+In fact, the properties of kmh_no200_rescale.par and kmh.par are very similar because they
+have been rescaled to the appropriate total mass of grains.  
+  11) Let me know if you have other tips to share.
+
+VIII.  Sample models.  Here we describe the 27 models in the order in which they appear in Paper III.
+   (1-6) The 6 models from the old code (Paper II):  modc0, modc0-I, modcI, modcI-II, modcII, modcIII.
+Note that these are not identical because the disk structure is changed between the codes:  in the old
+code, larger grains were distributed in the interior of the disk and smaller grains outside that region.
+In the new code, there are two separate disks with differing scale heights that can occupy the same space
+and have different grain properties (see section 3.2 of Paper III and Figures 1-3).
+   (7) modcII_quick.  an example of how to run a quick-look 2-D model.  To make it even faster, if you don't
+care about images, set CPEEL=NO.
+   (8-11)  AeBe_disk_nopah, AeBe_disk_pah, AeBe_env_nopah, AeBe_env_pah.  These show disk-only and disk+envelope
+models for higher-mass AeBe stars.  These also show how to run with PAH/vsg emission (Section 3.3 and 
+Figures 4,5,8 of Paper III).  
+   (12-13) highmass_embedded, highmass_embedded_nopah.  Models for massive embedded sources (disk+envelope)
+with and without PAHs/vsgs (Section 3.3 and Figures 6-8).  
+   (14)  highmass_ms.   This is a model for a highmass source with a constant density large optically thin
+envelope and PAH/vsgs (Section 3.3 and Figure 9).
+   (15-16)  VeLLO and VeLLO_noOI.  This is a model for a source with a very low luminosity central source,
+and illumination from the diffuse Interstellar radiation field impenging on the outer envelope dominating
+the luminosity (section 3.4, Figures 10-11).
+   (17-18) eclump_smooth, and eclump_fractal.  Models for completely externally illuminated cloud cores.
+one is clumpy, the other smooth.  These are described in sections 3.4, 3.7 and Figures 12-13 of Paper III.
+   (19) modcI_powlaw.  Example of using a power-law envelope instead of the Ulrich solution.  The power-law
+is more general and can be applied to evolved stars as well as protostars (Figures 14-15, section 3.5,
+Paper III).
+   (20) modcI_2walls.  Multiple cavity walls (section 3.6, Figures 16-17).
+   (21-22) modcI_fract_p5, modcI_fract_outflow_p9.  Adding fractal variations in the density structure
+of a Class I source (disk+envelope+outflow).   In modcI_fract_p5, the ratio of clumped to smooth density
+is 0.5, and the clumping occurs throughout the system (disk, outflow, envelope).  In modcI_fract_outflow_p9,
+the radio of clumped to smooth density is 0.9, and the clumping only occurs in the outflow.
+These are described in section 3.7 and figures 18-19.
+   (23) modcII_warp_spot.  Example model of a star with 2 hotspots and an inner disk warp (section 3.8,
+Figures 20-21.
+   (24) modcII_gap_puff.  Example model of a disk with an inner gap and puffed up inner walls (Section 3.9,
+Figures 22-25).
+   (25) modcII_misalign.  Disk with inner region misaligned compared to outer (Section 3.9, Figures 26-27).
+   (26) modcII_gap_spiral.  Disk with a gap and spiral structure starting at the edge of the gap (Section 3.9,
+Figure 28).
+   (27) modcII_hseq.  Hydrostatic equilibrium model of a disk (Section 3.10, Figures 29-31).
+
+IX.  Question, bugs, suggestions, improvements to codes or plot files,
+please contact 
+	Barbara Whitney
+	bwhitney@spacescience.org
+
+X.  If you use the code for publication, we would appreciate if you cite
+us.  The code is described in Whitney et al.(2013, ApJS, 207,30).

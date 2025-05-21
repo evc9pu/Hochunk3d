@@ -1,0 +1,7 @@
+After downloading the program (hochunk3d.tgz), untar the file
+into your codes directory:
+
+        tar -xzvf hochunk3d.tgz
+
+This will create a hochunk3d directory.  cd into hochunk3d, open the instructions.txt
+file,  and then follow the instructions there to compile and run.
